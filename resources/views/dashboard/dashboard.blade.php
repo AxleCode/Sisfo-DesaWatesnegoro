@@ -44,13 +44,43 @@
             height: 100vh;
             background: var(--dark-color);
             color: white;
-            transition: all 0.3s;
+            transition: transform 0.3s ease, width 0.3s ease;
             z-index: 1000;
             box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
+            transform: translateX(0); /* visible by default */
         }
-        
+
+        /* saat sidebar disembunyikan */
+        #sidebar.collapsed,
+        #sidebar.active {
+            transform: translateX(-100%); /* geser keluar layar */
+        }
+
+        /* tombol tetap di dalam nav DOM tetapi terlihat (fixed) */
+        #sidebar #sidebarCollapse {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            position: fixed;
+            left: 12px;  /* jarak dari kiri viewport */
+            top: 12px;   /* jarak dari atas viewport */
+            z-index: 1101; /* di atas overlay dan sidebar */
+            width: 40px;
+            height: 40px;
+            padding: 6px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+        }
+
+        /* ketika sidebar terlihat penuh, kita bisa geser tombol sedikit */
+        #sidebar:not(.collapsed) #sidebarCollapse {
+            left: calc(var(--sidebar-width) - 48px); /* tombol terlihat di tepi sidebar */
+        }
+
         .sidebar-header {
             padding: 20px;
             background: var(--primary-color);
@@ -145,13 +175,23 @@
             background: var(--primary-color);
         }
         
-        /* Main Content Styles */
+        /* overlay: sekarang tersedia untuk semua ukuran */
+        .overlay {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            /* background: rgba(0, 0, 0, 0.5); */
+            z-index: 1099; /* di bawah tombol (1101) */
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
         #content {
             margin-left: var(--sidebar-width);
             transition: all 0.3s;
             min-height: 100vh;
         }
-        
+
         .navbar {
             background-color: white;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -194,17 +234,53 @@
             font-size: 24px;
             margin-bottom: 15px;
         }
+
+        #sidebarCollapse {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 10px;
+            transition: all 0.3s;
+        }
+        #sidebarCollapse:hover {
+            background: var(--secondary-color);
+        }
+
+        /* default: tombol terlihat */
+        #sidebarCollapse {
+            display: block;
+        }
+
+        /* sembunyikan tombol saat lebar layar >=768px */
+        @media (min-width: 768px) {
+            #sidebarCollapse {
+                display: none !important;
+            }
+        }
         
         /* Responsive Styles */
         @media (max-width: 768px) {
             #sidebar {
-                margin-left: -var(--sidebar-width);
+                transform: translateX(-100%);
             }
             
             #sidebar.active {
                 margin-left: 0;
             }
             
+            /* ketika sidebar disembunyikan, konten gunakan margin 0 */
+            #content.collapsed {
+                margin-left: 0;
+            }
+            #sidebar:not(.collapsed) {
+                transform: translateX(0);
+            }
+
+            /* tombol pada mobile tetap di posisi fixed di kiri atas */
+            #sidebar #sidebarCollapse {
+                left: 12px;
+            }
             #content {
                 margin-left: 0;
             }
@@ -228,6 +304,7 @@
                 display: block;
                 opacity: 1;
             }
+            
         }
     </style>
 </head>
@@ -238,7 +315,9 @@
     <!-- Sidebar -->
     <nav id="sidebar">
         <div class="sidebar-header">
+           
             <img src="{{ asset('images/FElogo.png') }}" alt="Logo Desa Watesnegoro" width="180">
+           
         </div>
         
         <div class="sidebar-profile">
@@ -357,7 +436,10 @@
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                {{-- <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                    <i class="fas fa-bars"></i>
+                </button> --}}
+                <button type="button" id="sidebarCollapse" class="btn" aria-label="Toggle sidebar">
                     <i class="fas fa-bars"></i>
                 </button>
                 
@@ -525,27 +607,52 @@
     <!-- Custom Script -->
     <script>
         $(document).ready(function() {
-            // Sidebar toggle
-            $('#sidebarCollapse').on('click', function() {
-                $('#sidebar').toggleClass('active');
-                $('.overlay').toggleClass('active');
-                $('#content').toggleClass('active');
-            });
-            
-            // Close sidebar when clicking on overlay
-            $('.overlay').on('click', function() {
-                $('#sidebar').removeClass('active');
-                $('.overlay').removeClass('active');
-                $('#content').removeClass('active');
-            });
-            
-            // Handle submenu toggle
-            $('.dropdown-toggle').on('click', function(e) {
+            // initial state:
+            // pada desktop kita ingin sidebar terlihat; pada mobile default collapsed di CSS
+            // klik tombol toggle
+            $('#sidebarCollapse').on('click', function(e) {
                 e.preventDefault();
-                $(this).parent().find('.sub-menu').first().toggleClass('show');
-                $(this).parent().siblings().find('.sub-menu').removeClass('show');
+                $('#sidebar').toggleClass('collapsed');   // sembunyikan / tampilkan sidebar
+                $('#content').toggleClass('collapsed');   // geser konten
+                $('.overlay').toggleClass('active');      // overlay on/off
             });
+    
+            // klik overlay untuk menutup sidebar
+            $('.overlay').on('click', function() {
+                $('#sidebar').addClass('collapsed');
+                $('#content').addClass('collapsed');
+                $('.overlay').removeClass('active');
+            });
+    
+            // submenu toggle (Bootstrap collapse already used in HTML; keep both safe)
+            $('.dropdown-toggle').on('click', function(e) {
+                // jika menggunakan Bootstrap collapse (data-bs-toggle="collapse"), biarkan Bootstrap handle.
+                // Script ini hanya untuk toggling sub-menu non-bootstrap if present.
+                var $sub = $(this).parent().find('.sub-menu').first();
+                if ($sub.length) {
+                    e.preventDefault();
+                    $sub.toggleClass('show');
+                    $(this).parent().siblings().find('.sub-menu').removeClass('show');
+                }
+            });
+    
+            // Optional: close sidebar on window resize for mobile/desktop preference
+            $(window).on('resize', function() {
+                if ($(window).width() > 768) {
+                    // pastikan sidebar tidak tersembunyi di desktop; hapus class collapsed jika ingin selalu tampil
+                    // Jika Anda ingin mempertahankan last state antar-resize, hapus baris berikut
+                    $('#sidebar').removeClass('collapsed');
+                    $('#content').removeClass('collapsed');
+                    $('.overlay').removeClass('active');
+                } else {
+                    // di mobile, hide by default (sesuaikan jika ingin kebalikan)
+                    $('#sidebar').addClass('collapsed');
+                    $('#content').addClass('collapsed');
+                    $('.overlay').removeClass('active');
+                }
+            }).trigger('resize'); // jalankan sekali saat load
         });
     </script>
+           
 </body>
 </html>
