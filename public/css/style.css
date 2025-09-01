@@ -1,0 +1,440 @@
+  
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "Quicksand", sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+
+    /* Header */
+  header{
+    display: inline;
+  }
+
+.navbar-container {
+    width: 100%; /* Lebarkan navbar hingga layar penuh */
+    justify-content: space-around;
+    display: flex;
+    align-items: center;
+    top: 0;
+    background-color: #2D3E50;
+    position: sticky; /* Buat navbar menjadi sticky */
+    transition: background-color 0.3s ease; /* Animasi perubahan warna */
+  }
+  
+.navbar-container .logo img{
+    width: 180px;
+  }
+
+.navbar-container .nav-list ul {
+    padding-left: 0;
+    display: flex;
+    justify-content: center;
+    gap: 2rem 1rem;
+  }
+   
+.navbar-container .nav-list li {
+    list-style-type: none;
+  }
+   
+.navbar-container .nav-list li a {
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: white;
+    padding: .5rem 1.5rem;
+    border-radius: 999px;
+    transition: all .2s ease-in-out;
+  }
+   
+.navbar-container .nav-list li:hover a {
+    background-color: #5004c4;
+    color: white;
+  }
+
+    /* Main */
+  main{
+    max-width: 1200px;
+    width: 100%;
+    flex: 1;
+    margin-inline: auto;
+    display: block;
+    align-items: center;
+    padding: 2rem 1rem;
+    margin-bottom: 100px;
+  }
+
+  main .home {
+    flex: 1;
+    padding: 2rem;
+    margin-top: 40px;
+    margin-bottom: 100px;
+    display: flex;
+    align-items: center;
+  }
+
+  main .home .home-image{
+    flex: 1 ;
+    display: inline-flex;
+  }
+
+  main .home .home-image img{
+    width: 300px;
+    min-width: 250px;
+    margin: auto;
+  }
+
+  main .home .home-description {
+    flex: 1 ;
+  }
+
+  main .home .home-description h1{
+    font-size: 3.5rem;
+    margin-block: 1rem;
+    font-weight: bolder;
+  }
+
+  main .home .home-description .slogan{
+    font-size: 1.4rem;
+    margin-block: 1rem;
+    font-weight: bolder;
+    color: #5004c4;
+  }
+
+  main .home .home-description .description{
+    line-height: 1.5rem;
+    font-size: 1rem;
+    padding-bottom: 1.5rem;
+  }
+
+  main .home .home-description a {
+    padding: .8rem 2.5rem;
+    margin-block-start: .5rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 1rem;
+    font-family: 'Quicksand', sans-serif;
+    color: white;
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-color: #5004c4;
+    cursor: pointer;
+    transition: all .15s ease-in;
+    text-decoration: none;
+  }
+   
+  main .home .home-description a:hover {
+    border: 3px solid #2D3E50;
+    color: #2D3E50;
+    background-color: transparent;
+  }
+  
+    /* Product */
+  main .product {
+    align-items: center;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  main .product .card-wrapper {
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: center;
+    gap: 20px; 
+  }
+
+  main .product h1{
+    text-align: center;
+    font-size: 2.5rem;
+  }
+
+  main .product .card{
+    box-shadow: 0 2px 8px 2px rgba(0, 0, 0, 0.2);
+    border-radius: 30px;
+    padding: 0px 40px ;
+    padding-bottom: 1.5rem;
+    padding-top: .5rem;
+    display: none;
+    margin: 0 auto;
+    animation: fade 1s ease-in-out;
+    width: 1165px;
+  }
+
+  .featured-image{
+    width: 100%;
+    max-height: 300px;
+    max-width: 1200px;
+  }
+
+  main .product .card p{
+    line-height: 1.5rem;
+    font-size: 1rem;
+  }
+
+  .slider{
+    text-align: center;
+  }
+
+  /* About Us */
+  main .about h1{
+    text-align: center;
+    font-size: 3rem;
+  }
+
+  main .about .card-about{
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center;
+    box-shadow: 0 2px 8px 2px rgba(0, 0, 0, 0.2);
+    border-radius: 30px;
+    margin: 0 auto;
+    padding-bottom: 2rem;
+    padding-top: .5rem;
+  }
+
+  main .about .card-about img{
+    width: 100%;
+    max-width: 230px;
+    padding: 10px;
+  }
+
+  main .about .card-about h2{
+    text-align: center;
+    padding: 10px ;
+  }
+
+  main .about .card-about .table-bold{
+    font-weight: bold;
+  }
+
+  main .about .card-about .maps{
+    height: 450px;
+    width: 1050px;
+  }
+  main .about .card-about .table-about{
+    text-align: center;
+    width: 100%;
+    margin-top: 15px;
+    border-collapse: collapse;
+    height: 8rem;
+  }
+
+  /* Profile */
+  main aside{
+    padding-top: 1rem;
+  }
+
+  main aside article{
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Pusatkan secara vertikal */
+    justify-content: center; /* Pusatkan secara horizontal */
+    box-shadow: 0 2px 8px 2px rgba(0, 0, 0, 0.2);
+    border-radius: 30px;
+    padding-bottom: 2rem;
+    padding-top: 1rem;
+    margin: 0 auto;
+  }
+
+  main aside article header {
+    text-align: center;
+  }
+
+  main aside article header figure figcaption{
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.5rem;
+    padding-top: 1rem;
+  }
+
+  main aside article header figure img{
+    width: 250px;
+    align-items: center;
+    border-radius: 50%;
+  }
+
+  main aside article section{
+    text-align: center;
+  }
+
+  .table-info{
+    text-align: start;
+  }
+
+  footer {
+    padding: 10px;
+    color: #fff;
+    text-align: center;
+    background-color: #2D3E50;
+  }
+  @keyframes fade {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+  }
+
+  /*CSS untuk styling tombol slider */
+  .slider-button {
+    display: inline-block;
+    background-color: #2D3E50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 10px 20px;
+    margin: 0 5px;
+    font-size: 18px;
+  }
+
+  .slider-button:hover {
+    background-color: #5004c4;
+  }
+
+/* Responsif untuk 1200px kebawah */
+@media screen and (max-width: 1200px) {
+  .navbar-container{
+    width: 100%;
+  }
+
+  main .home .home-image img {
+    width: 300px;
+    max-width: 100%;
+    margin: auto; /* Menengahkan gambar secara horizontal */
+  }
+
+  main .home {
+    display: block;
+    text-align: center; /* Menengahkan konten secara horizontal */
+  }
+
+  main .product .card{
+    width: 700px;
+  }
+
+  main .about .card-about{
+    width: 700px;
+  }
+
+  main .about .card-about .maps{
+    height: 450px;
+    width: 650px;
+    text-align: center;
+  }
+
+  main .about .card-about .map{
+    text-align: center;
+  }
+
+  main aside article{
+    width: 700px;
+  }
+}
+
+/* Responsif untuk Mobile */
+@media screen and (max-width: 768px) {
+  .navbar-container {
+    flex-direction: column; /* Ubah menjadi tata letak kolom */
+    align-items: center; /* Pusatkan vertikal */
+    padding: 1rem; /* Ruang antara elemen */
+  }
+
+  .navbar-container .nav-list ul {
+    flex-direction: column; /* Ubah menjadi tata letak kolom */
+    gap: 1rem 0; /* Ruang antara item */
+  }
+
+  .navbar-container .nav-list li a {
+    padding: .5rem 1rem;
+  }
+
+  main .home .home-image img {
+    width: 200px;
+    max-width: 100%;
+    margin: auto; /* Menengahkan gambar secara horizontal */
+  }
+
+  main .home {
+    display: block;
+    text-align: center; /* Menengahkan konten secara horizontal */
+  }
+
+  main .product .card{
+    width: 480px;
+  }
+
+  main .about .card-about{
+    width: 480px;
+  }
+
+  main .about .card-about .maps{
+    height: 450px;
+    width: 450px;
+    text-align: center;
+  }
+
+  main .about .card-about .map{
+    text-align: center;
+  }
+
+  main aside article{
+    width: 480px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .navbar-container {
+    flex-direction: column; /* Ubah menjadi tata letak kolom */
+    align-items: center; /* Pusatkan vertikal */
+    padding: 1rem; /* Ruang antara elemen */
+  }
+
+  .navbar-container .nav-list ul {
+    flex-direction: column; /* Ubah menjadi tata letak kolom */
+    gap: 1rem 0; /* Ruang antara item */
+  }
+
+  .navbar-container .nav-list li a {
+    padding: .5rem 1rem;
+  }
+
+  main .home .home-image img {
+    width: 100px;
+    max-width: 100%;
+    margin: auto; /* Menengahkan gambar secara horizontal */
+  }
+
+  main .home {
+    display: block;
+    text-align: center; /* Menengahkan konten secara horizontal */
+  }
+
+  main .product .card{
+    width: 350px;
+  }
+
+  main .about .card-about{
+    width: 350px;
+  }
+
+  main .about .card-about .maps{
+    height: 300px;
+    width: 300px;
+    text-align: center;
+  }
+
+  main .about .card-about .map{
+    text-align: center;
+  }
+
+  main aside article{
+    width: 350px;
+  }
+}
