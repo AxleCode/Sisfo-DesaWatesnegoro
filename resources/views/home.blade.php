@@ -6,11 +6,24 @@
     <link rel="icon" href="images/logo_mojokerto.png">
     <title>Pemerintah Desa Watesnegoro || Sisfo Desa Watesnegoro</title>
 
+    <meta name="description" content="Desa Watesnegoro adalah sebuah desa yang terletak di kecamatan ngoro yang subur dengan pemandangan alam yang indah. Desa kami memiliki berbagai potensi dalam bidang pertanian, peternakan, dan kerajinan tangan.">
+    
+    <meta name="keywords" content="Desa Watesnegoro">
+    <meta name="author" content="Pemerintah Desa Watesnegoro">
+    <meta name="robots" content="index, follow">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="canonical" href="https://watesnegoro.free.nf"> <!-- Ganti URL sesuai domain asli -->
+    <meta property="og:title" content="Pemerintah Desa Watesnegoro | Desa Watesnegoro Ngoro Mojokerto">
+    <meta property="og:image" content="https://watesnegoro.free.nf/images/logo_mojokerto.png">
+    <meta property="og:url" content="https://watesnegoro.free.nf"> <!-- Ganti sesuai domain -->
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+
     <!-- My Own Styles -->
-    {{-- <link rel="stylesheet" href="css/style.css"> --}}
+    <!-- {{-- <link rel="stylesheet" href="css/style.css"> --}} -->
 
     <!-- Bootstrap 5 + FontAwesome -->
-    {{-- <link rel="stylesheet" href="{{ asset('bootstrap-5.3.7-dist/css/bootstrap.min.css') }}">--}}
+    <!-- {{-- <link rel="stylesheet" href="{{ asset('bootstrap-5.3.7-dist/css/bootstrap.min.css') }}">--}} -->
      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
@@ -340,7 +353,7 @@
                 <div class="col-lg-4 mb-4">
                     <h4>Kontak Kami</h4>
                     <p><i class="fas fa-phone me-2"></i> (021) 1234-5678</p>
-                    {{-- <p><i class="fas fa-envelope me-2"></i> info@desamakmur.id</p> --}}
+                    <!-- {{-- <p><i class="fas fa-envelope me-2"></i> info@desamakmur.id</p> --}} -->
                     <p><i class="fas fa-clock me-2"></i> Senin - Jumat: 08:00 - 16:00</p>
                 </div>
                 <div class="col-lg-4 mb-4">
@@ -367,7 +380,7 @@
     </footer>
 </body>
 
-{{-- <script src="{{ asset('bootstrap-5.3.7-dist/js/bootstrap.bundle.min.js') }}"></script> --}}
+<!-- {{-- <script src="{{ asset('bootstrap-5.3.7-dist/js/bootstrap.bundle.min.js') }}"></script> --}} -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
 
 <script>
