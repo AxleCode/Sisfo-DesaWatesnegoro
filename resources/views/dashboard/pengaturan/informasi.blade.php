@@ -209,6 +209,15 @@
             padding: 20px;
         }
         
+        .setting-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            margin-bottom: 20px;
+            height: 100%;
+        }
+
         .dashboard-card {
             background: white;
             border-radius: 10px;
@@ -375,129 +384,36 @@
             <div class="container-fluid">
                 <div class="row mb-4">
                     <div class="col-12">
-                        <h2 class="mb-4">Dashboard Sistem</h2>
+                        <h2 class="mb-4">Informasi</h2>
                         <div class="alert alert-primary d-flex align-items-center" role="alert">
                             <i class="fas fa-info-circle me-2"></i>
-                            <div>Selamat datang {{ Auth::user()->name }} di Sistem Administrasi Desa Watesnegoro. Anda login sebagai Administrator.</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Stats Cards -->
-                <div class="row mb-4">
-                    <div class="col-md-3 col-sm-6">
-                        <div class="dashboard-card">
-                            <div class="card-icon bg-primary text-white">
-                                <i class="fas fa-newspaper"></i>
-                            </div>
-                            <h4>25</h4>
-                            <p class="text-muted">Total Berita</p>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="dashboard-card">
-                            <div class="card-icon bg-success text-white">
-                                <i class="fas fa-download"></i>
-                            </div>
-                            <h4>12</h4>
-                            <p class="text-muted">File Download</p>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="dashboard-card">
-                            <div class="card-icon bg-info text-white">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <h4>158</h4>
-                            <p class="text-muted">Pengguna Terdaftar</p>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="dashboard-card">
-                            <div class="card-icon bg-warning text-white">
-                                <i class="fas fa-comments"></i>
-                            </div>
-                            <h4>42</h4>
-                            <p class="text-muted">Komentar Baru</p>
+                            <div>Halaman untuk mengatur tampilan website</div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Recent Activity and Quick Actions -->
                 <div class="row">
-                    <div class="col-lg-8">
-                        <div class="dashboard-card">
-                            <h4 class="mb-4">Aktivitas Terbaru</h4>
+                        <div class="setting-card">
+                            <h4 class="mb-4">Slider 1</h4>
                             <div class="list-group">
                                 <div class="list-group-item d-flex align-items-center">
                                     <div class="bg-primary rounded-circle p-2 me-3">
-                                        <i class="fas fa-plus text-white"></i>
+                                       <img src="images/gambar_header1.png">
                                     </div>
                                     <div class="flex-grow-1">
                                         <div class="d-flex justify-content-between">
-                                            <h6 class="mb-1">Berita Baru Ditambahkan</h6>
-                                            <small class="text-muted">2 jam yang lalu</small>
+                                            <h6 class="mb-1">Selamat Datang di Website Desa Watesnegoro</h6>
                                         </div>
-                                        <p class="mb-1">"Kerja Bakti Desa Watesnegoro" telah ditambahkan</p>
+                                        <p class="mb-1">"Website resmi pemerintah Desa Watesnegoro untuk memberikan informasi terbaru kepada masyarakat</p>
                                     </div>
-                                </div>
-                                <div class="list-group-item d-flex align-items-center">
-                                    <div class="bg-success rounded-circle p-2 me-3">
-                                        <i class="fas fa-download text-white"></i>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <div class="d-flex justify-content-between">
-                                            <h6 class="mb-1">File Diunduh</h6>
-                                            <small class="text-muted">5 jam yang lalu</small>
-                                        </div>
-                                        <p class="mb-1">Formulir KTP diunduh 15 kali</p>
-                                    </div>
-                                </div>
-                                <div class="list-group-item d-flex align-items-center">
-                                    <div class="bg-info rounded-circle p-2 me-3">
-                                        <i class="fas fa-user text-white"></i>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <div class="d-flex justify-content-between">
-                                            <h6 class="mb-1">Pengguna Baru</h6>
-                                            <small class="text-muted">Kemarin</small>
-                                        </div>
-                                        <p class="mb-1">Budi Santoso mendaftar sebagai warga</p>
-                                    </div>
-                                </div>
-                                <div class="list-group-item d-flex align-items-center">
-                                    <div class="bg-warning rounded-circle p-2 me-3">
-                                        <i class="fas fa-comment text-white"></i>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <div class="d-flex justify-content-between">
-                                            <h6 class="mb-1">Komentar Baru</h6>
-                                            <small class="text-muted">2 hari yang lalu</small>
-                                        </div>
-                                        <p class="mb-1">Siti memberikan komentar pada berita "Pelatihan Kerajinan"</p>
+                                    <div>
+                                        tombol ganti foto dan hapus
                                     </div>
                                 </div>
                             </div>
+                            tombol
                         </div>
-                    </div>
-                    
-                    <div class="col-lg-4">
-                        <div class="dashboard-card">
-                            <h4 class="mb-4">Aksi Cepat</h4>
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-primary mb-2">
-                                    <i class="fas fa-plus me-2"></i>Tambah Berita
-                                </button>
-                                <button class="btn btn-success mb-2">
-                                    <i class="fas fa-upload me-2"></i>Unggah File
-                                </button>
-                                <button class="btn btn-warning mb-2">
-                                    <i class="fas fa-cog me-2"></i>Pengaturan Website
-                                </button>
-                            </div>
-                        </div>
-                        
-                    </div>
                 </div>
             </div>
         </div>

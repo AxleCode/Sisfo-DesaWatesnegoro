@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PengaturanController;
 
 Route::get('/', function () {
     return view('home');
@@ -29,6 +30,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', function () {
             return view('dashboard.dashboard');
         })->name('admin.dashboard');
+    });
+
+    // Route untuk pengaturan
+    Route::prefix('pengaturan')->group(function () {
+        Route::get('/informasi', [PengaturanController::class, 'informasi'])->name('admin.pengaturan.informasi');
+        // Route::post('/informasi', [PengaturanController::class, 'simpanInformasi'])->name('admin.pengaturan.simpan-informasi');
+        // Route::post('/media-sosial', [PengaturanController::class, 'simpanMediaSosial'])->name('admin.pengaturan.simpan-media-sosial');
+        // Route::post('/seo', [PengaturanController::class, 'simpanSEO'])->name('admin.pengaturan.simpan-seo');
     });
     
     // Route untuk warga
