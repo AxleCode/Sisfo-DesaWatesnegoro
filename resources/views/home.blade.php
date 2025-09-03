@@ -139,6 +139,39 @@
         .social-links a:hover {
             color: var(--light-color);
         }
+
+        .hero-slider .carousel-item {
+    height: 80vh;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+/* Untuk mobile responsiveness */
+@media (max-width: 768px) {
+    .hero-slider .carousel-item {
+        height: 60vh;
+    }
+    
+    .carousel-caption h2 {
+        font-size: 1.5rem;
+    }
+    
+    .carousel-caption p {
+        font-size: 0.9rem;
+    }
+}
+
+/* Memastikan gambar cover seluruh area */
+.carousel-item {
+    transition: transform 0.6s ease-in-out;
+}
+
+.carousel-item img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
     </style>
 </head>
 <body id="home">
@@ -179,31 +212,42 @@
     <!-- Hero Slider Section -->
     <section class="hero-slider">
         <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+            
+            <!-- Carousel Indicators -->
+            @if($sliders->count() > 0)
             <div class="carousel-indicators">
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+                @foreach($sliders as $index => $slider)
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ $index }}" 
+                    class="{{ $index === 0 ? 'active' : '' }}"></button>
+                @endforeach
             </div>
+            @endif
+            
+            <!-- Carousel Items -->
             <div class="carousel-inner">
+                @forelse($sliders as $index => $slider)
+                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}" 
+                    style="background-image: url('{{ asset('storage/' . $slider->image) }}');">
+                    <div class="carousel-caption">
+                        <h2>{{ $slider->title }}</h2>
+                        @if($slider->description)
+                        <p>{{ $slider->description }}</p>
+                        @endif
+                    </div>
+                </div>
+                @empty
+                <!-- Default sliders jika tidak ada data dari database -->
                 <div class="carousel-item active" style="background-image: url('images/gambar_header1.png');">
                     <div class="carousel-caption">
                         <h2>Selamat Datang di Website Desa Watesnegoro</h2>
                         <p>Website resmi pemerintah Desa Watesnegoro untuk memberikan informasi terbaru kepada masyarakat</p>
                     </div>
                 </div>
-                <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1567016376408-22d2b7dfc7b9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
-                    <div class="carousel-caption">
-                        <h2>Desa yang Maju dan Mandiri</h2>
-                        <p>Bersama membangun desa untuk kesejahteraan masyarakat</p>
-                    </div>
-                </div>
-                <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1517486808906-6ca8b3f8e1c1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
-                    <div class="carousel-caption">
-                        <h2>Pelayanan Terbaik untuk Masyarakat</h2>
-                        <p>Kami berkomitmen memberikan pelayanan terbaik untuk kenyamanan masyarakat</p>
-                    </div>
-                </div>
+                @endforelse
             </div>
+            
+            <!-- Carousel Controls -->
+            @if($sliders->count() > 1)
             <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon"></span>
                 <span class="visually-hidden">Previous</span>
@@ -212,6 +256,7 @@
                 <span class="carousel-control-next-icon"></span>
                 <span class="visually-hidden">Next</span>
             </button>
+            @endif
         </div>
     </section>
 

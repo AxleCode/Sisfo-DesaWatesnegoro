@@ -3,14 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PengaturanController;
+use App\Http\Controllers\HomeController;
 
-Route::get('/', function () {
-    return view('home');
-});
-
-Route::get('/home', function () {
-    return view('home');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index']);
 
 // Route untuk authentication
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -35,9 +31,9 @@ Route::middleware('auth')->group(function () {
     // Route untuk pengaturan
     Route::prefix('pengaturan')->group(function () {
         Route::get('/informasi', [PengaturanController::class, 'informasi'])->name('admin.pengaturan.informasi');
-        // Route::post('/informasi', [PengaturanController::class, 'simpanInformasi'])->name('admin.pengaturan.simpan-informasi');
-        // Route::post('/media-sosial', [PengaturanController::class, 'simpanMediaSosial'])->name('admin.pengaturan.simpan-media-sosial');
-        // Route::post('/seo', [PengaturanController::class, 'simpanSEO'])->name('admin.pengaturan.simpan-seo');
+        Route::post('/slider/tambah', [PengaturanController::class, 'simpanSlider'])->name('admin.pengaturan.slider.tambah');
+        Route::post('/slider/update/{id}', [PengaturanController::class, 'updateSlider'])->name('admin.pengaturan.slider.update');
+        Route::delete('/slider/hapus/{id}', [PengaturanController::class, 'hapusSlider'])->name('admin.pengaturan.slider.hapus');
     });
     
     // Route untuk warga

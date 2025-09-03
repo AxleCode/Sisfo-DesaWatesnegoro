@@ -350,9 +350,6 @@
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                {{-- <button type="button" id="sidebarCollapse" class="btn btn-primary">
-                    <i class="fas fa-bars"></i>
-                </button> --}}
                 <button type="button" id="sidebarCollapse" class="btn" aria-label="Toggle sidebar">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -360,19 +357,21 @@
                 <div class="ms-auto d-flex align-items-center">
                     <div class="dropdown">
                         <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="https://ui-avatars.com/api/?name=Admin+User&background=4c956c&color=fff" alt="Profile" width="32" height="32" class="rounded-circle me-2">
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=4c956c&color=fff" alt="Profile" width="32" height="32" class="rounded-circle me-2">
                             <span>{{ Auth::user()->name }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="dropdownUser">
                             <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profil</a></li>
                             <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Pengaturan</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     <i class="fas fa-sign-out-alt me-2"></i> Logout
                                 </a>
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                     @csrf
-                                </form></li>
+                                </form>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -385,6 +384,23 @@
                 <div class="row mb-4">
                     <div class="col-12">
                         <h2 class="mb-4">Informasi</h2>
+                        
+                        @if(session('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="fas fa-check-circle me-2"></i>
+                                {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+                        
+                        @if($errors->any())
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                Terdapat kesalahan dalam input data. Silakan periksa kembali.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+                        
                         <div class="alert alert-primary d-flex align-items-center" role="alert">
                             <i class="fas fa-info-circle me-2"></i>
                             <div>Halaman untuk mengatur tampilan website</div>
@@ -392,29 +408,147 @@
                     </div>
                 </div>
                 
-                <!-- Recent Activity and Quick Actions -->
+                <!-- Slider Management -->
                 <div class="row">
+                    <div class="col-12">
                         <div class="setting-card">
-                            <h4 class="mb-4">Slider 1</h4>
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h4 class="mb-0">Slider Management</h4>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahSliderModal">
+                                    <i class="fas fa-plus me-2"></i>Tambah Slider
+                                </button>
+                            </div>
+                            
                             <div class="list-group">
+                                @foreach($sliders as $slider)
                                 <div class="list-group-item d-flex align-items-center">
-                                    <div class="bg-primary rounded-circle p-2 me-3">
-                                       <img src="images/gambar_header1.png">
+                                    <div class="me-3">
+                                        <img src="{{ asset('storage/' . $slider->image) }}" class="slider-image" alt="{{ $slider->title }}" style="width: 100px">
                                     </div>
                                     <div class="flex-grow-1">
-                                        <div class="d-flex justify-content-between">
-                                            <h6 class="mb-1">Selamat Datang di Website Desa Watesnegoro</h6>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h6 class="mb-1">{{ $slider->title }}</h6>
+                                            <span class="badge bg-{{ $slider->is_active ? 'success' : 'secondary' }}">
+                                                {{ $slider->is_active ? 'Aktif' : 'Nonaktif' }}
+                                            </span>
                                         </div>
-                                        <p class="mb-1">"Website resmi pemerintah Desa Watesnegoro untuk memberikan informasi terbaru kepada masyarakat</p>
+                                        <p class="mb-1 text-muted">{{ $slider->description }}</p>
+                                        <small class="text-muted">Urutan: {{ $slider->order }}</small>
                                     </div>
-                                    <div>
-                                        tombol ganti foto dan hapus
+                                    <div class="ms-3">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editSliderModal{{ $slider->id }}">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <form action="{{ route('admin.pengaturan.slider.hapus', $slider->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus slider ini?')">
+                                                <i class="fas fa-trash"></i> Hapus
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
+                                
+                                <!-- Edit Slider Modal -->
+                                <div class="modal fade" id="editSliderModal{{ $slider->id }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Edit Slider</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form action="{{ route('admin.pengaturan.slider.update', $slider->id) }}" method="POST" enctype="multipart/form-data">
+                                                @csrf
+                                                @method('POST')
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label for="title{{ $slider->id }}" class="form-label">Judul</label>
+                                                        <input type="text" class="form-control" id="title{{ $slider->id }}" name="title" value="{{ $slider->title }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="description{{ $slider->id }}" class="form-label">Deskripsi</label>
+                                                        <textarea class="form-control" id="description{{ $slider->id }}" name="description" rows="3">{{ $slider->description }}</textarea>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="image{{ $slider->id }}" class="form-label">Gambar</label>
+                                                        <input type="file" class="form-control" id="image{{ $slider->id }}" name="image" accept="image/*">
+                                                        <div class="form-text">Kosongkan jika tidak ingin mengubah gambar</div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="order{{ $slider->id }}" class="form-label">Urutan</label>
+                                                        <input type="number" class="form-control" id="order{{ $slider->id }}" name="order" value="{{ $slider->order }}">
+                                                    </div>
+                                                    <div class="form-check mb-3">
+                                                        <input class="form-check-input" type="checkbox" id="is_active{{ $slider->id }}" name="is_active" value="1" {{ $slider->is_active ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="is_active{{ $slider->id }}">
+                                                            Aktif
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endforeach
+                                
+                                @if($sliders->isEmpty())
+                                <div class="list-group-item text-center text-muted py-4">
+                                    <i class="fas fa-image fa-3x mb-3"></i>
+                                    <p>Belum ada slider. Tambahkan slider pertama Anda.</p>
+                                </div>
+                                @endif
                             </div>
-                            tombol
                         </div>
+                    </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tambah Slider Modal -->
+    <div class="modal fade" id="tambahSliderModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah Slider Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('admin.pengaturan.slider.tambah') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Judul</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Deskripsi</label>
+                            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Gambar</label>
+                            <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="order" class="form-label">Urutan</label>
+                            <input type="number" class="form-control" id="order" name="order" value="0">
+                        </div>
+                        <div class="form-check mb-3">
+                            <input type="hidden" name="is_active" value="0">
+                            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" checked>
+                            <label class="form-check-label" for="is_active">
+                                Aktif
+                            </label>
+                        </div>                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan Slider</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -473,6 +607,24 @@
                 }
             }).trigger('resize'); // jalankan sekali saat load
         });
+
+          // Script untuk menangani modal errors
+          @if($errors->any())
+            @if($errors->has('title') || $errors->has('description') || $errors->has('image'))
+                document.addEventListener('DOMContentLoaded', function() {
+                    var modal = new bootstrap.Modal(document.getElementById('tambahSliderModal'));
+                    modal.show();
+                });
+            @endif
+            @foreach($sliders as $slider)
+                @if($errors->has('title.'.$slider->id) || $errors->has('description.'.$slider->id))
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var modal = new bootstrap.Modal(document.getElementById('editSliderModal{{ $slider->id }}'));
+                        modal.show();
+                    });
+                @endif
+            @endforeach
+        @endif
     </script>
            
 </body>
