@@ -413,7 +413,7 @@
                     <div class="col-12">
                         <div class="setting-card">
                             <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h4 class="mb-0">Slider Management</h4>
+                                <h4 class="mb-0">Slider Gambar Utama</h4>
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahSliderModal">
                                     <i class="fas fa-plus me-2"></i>Tambah Slider
                                 </button>
@@ -505,6 +505,252 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- About Slider Management -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="setting-card">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h4 class="mb-0">Tentang Desa</h4>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahAboutSliderModal">
+                                    <i class="fas fa-plus me-2"></i>Tambah Slider
+                                </button>
+                            </div>
+                            
+                            <div class="list-group">
+                                @foreach($aboutSliders as $slider)
+                                <div class="list-group-item d-flex align-items-center">
+                                    <div class="me-3">
+                                        <img src="{{ asset('storage/' . $slider->image) }}" class="slider-image" alt="{{ $slider->title }}" style="width: 100px; height: 80px; object-fit: cover;">
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h6 class="mb-1">{{ $slider->title }}</h6>
+                                            <span class="badge bg-{{ $slider->is_active ? 'success' : 'secondary' }}">
+                                                {{ $slider->is_active ? 'Aktif' : 'Nonaktif' }}
+                                            </span>
+                                        </div>
+                                        <p class="mb-1 text-muted">{{ Str::limit($slider->description, 100) }}</p>
+                                        <small class="text-muted">Urutan: {{ $slider->order }}</small>
+                                    </div>
+                                    <div class="ms-3">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editAboutSliderModal{{ $slider->id }}">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <form action="{{ route('admin.pengaturan.about-slider.hapus', $slider->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus slider ini?')">
+                                                <i class="fas fa-trash"></i> Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <!-- Edit About Slider Modal -->
+                                <div class="modal fade" id="editAboutSliderModal{{ $slider->id }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Edit Slider Tentang Desa</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form action="{{ route('admin.pengaturan.about-slider.update', $slider->id) }}" method="POST" enctype="multipart/form-data">
+                                                @csrf
+                                                @method('POST')
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label for="about_title{{ $slider->id }}" class="form-label">Judul</label>
+                                                        <input type="text" class="form-control" id="about_title{{ $slider->id }}" name="title" value="{{ $slider->title }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="about_description{{ $slider->id }}" class="form-label">Deskripsi</label>
+                                                        <textarea class="form-control" id="about_description{{ $slider->id }}" name="description" rows="3">{{ $slider->description }}</textarea>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="about_image{{ $slider->id }}" class="form-label">Gambar</label>
+                                                        <input type="file" class="form-control" id="about_image{{ $slider->id }}" name="image" accept="image/*">
+                                                        <div class="form-text">Kosongkan jika tidak ingin mengubah gambar</div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="about_order{{ $slider->id }}" class="form-label">Urutan</label>
+                                                        <input type="number" class="form-control" id="about_order{{ $slider->id }}" name="order" value="{{ $slider->order }}">
+                                                    </div>
+                                                    <div class="form-check mb-3">
+                                                        <input class="form-check-input" type="checkbox" id="about_is_active{{ $slider->id }}" name="is_active" value="1" {{ $slider->is_active ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="about_is_active{{ $slider->id }}">
+                                                            Aktif
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endforeach
+                                
+                                @if($aboutSliders->isEmpty())
+                                <div class="list-group-item text-center text-muted py-4">
+                                    <i class="fas fa-image fa-3x mb-3"></i>
+                                    <p>Belum ada slider tentang desa. Tambahkan slider pertama Anda.</p>
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dusun Management -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="setting-card">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h4 class="mb-0">Data Dusun</h4>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahDusunModal">
+                                    <i class="fas fa-plus me-2"></i>Tambah Dusun
+                                </button>
+                            </div>
+                            
+                            <div class="list-group">
+                                @foreach($dusuns as $dusun)
+                                <div class="list-group-item">
+                                    <div class="d-flex align-items-center">
+                                        @if($dusun->image)
+                                        <div class="me-3">
+                                            <img src="{{ asset('storage/' . $dusun->image) }}" class="slider-image" alt="{{ $dusun->name }}" style="width: 100px; height: 80px; object-fit: cover;">
+                                        </div>
+                                        @endif
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h6 class="mb-1">{{ $dusun->name }}</h6>
+                                                <span class="badge bg-{{ $dusun->is_active ? 'success' : 'secondary' }}">
+                                                    {{ $dusun->is_active ? 'Aktif' : 'Nonaktif' }}
+                                                </span>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <small class="text-muted">Kepala Dusun: {{ $dusun->head_name ?? '-' }}</small><br>
+                                                    <small class="text-muted">Telp: {{ $dusun->head_phone ?? '-' }}</small>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <small class="text-muted">Penduduk: {{ number_format($dusun->population) }}</small><br>
+                                                    <small class="text-muted">KK: {{ number_format($dusun->households) }}</small>
+                                                </div>
+                                            </div>
+                                            @if($dusun->description)
+                                            <p class="mb-1 text-muted mt-2">{{ Str::limit($dusun->description, 150) }}</p>
+                                            @endif
+                                        </div>
+                                        <div class="ms-3">
+                                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editDusunModal{{ $dusun->id }}">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </button>
+                                            <form action="{{ route('admin.pengaturan.dusun.hapus', $dusun->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data dusun ini?')">
+                                                    <i class="fas fa-trash"></i> Hapus
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Edit Dusun Modal -->
+                                <div class="modal fade" id="editDusunModal{{ $dusun->id }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Edit Data Dusun</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form action="{{ route('admin.pengaturan.dusun.update', $dusun->id) }}" method="POST" enctype="multipart/form-data">
+                                                @csrf
+                                                @method('POST')
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="dusun_name{{ $dusun->id }}" class="form-label">Nama Dusun</label>
+                                                                <input type="text" class="form-control" id="dusun_name{{ $dusun->id }}" name="name" value="{{ $dusun->name }}" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="dusun_order{{ $dusun->id }}" class="form-label">Urutan</label>
+                                                                <input type="number" class="form-control" id="dusun_order{{ $dusun->id }}" name="order" value="{{ $dusun->order }}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="dusun_head_name{{ $dusun->id }}" class="form-label">Nama Kepala Dusun</label>
+                                                                <input type="text" class="form-control" id="dusun_head_name{{ $dusun->id }}" name="head_name" value="{{ $dusun->head_name }}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="dusun_head_phone{{ $dusun->id }}" class="form-label">Telepon Kepala Dusun</label>
+                                                                <input type="text" class="form-control" id="dusun_head_phone{{ $dusun->id }}" name="head_phone" value="{{ $dusun->head_phone }}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="dusun_population{{ $dusun->id }}" class="form-label">Jumlah Penduduk</label>
+                                                                <input type="number" class="form-control" id="dusun_population{{ $dusun->id }}" name="population" value="{{ $dusun->population }}" min="0">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="dusun_households{{ $dusun->id }}" class="form-label">Jumlah KK</label>
+                                                                <input type="number" class="form-control" id="dusun_households{{ $dusun->id }}" name="households" value="{{ $dusun->households }}" min="0">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="dusun_description{{ $dusun->id }}" class="form-label">Deskripsi</label>
+                                                        <textarea class="form-control" id="dusun_description{{ $dusun->id }}" name="description" rows="3">{{ $dusun->description }}</textarea>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="dusun_image{{ $dusun->id }}" class="form-label">Gambar</label>
+                                                        <input type="file" class="form-control" id="dusun_image{{ $dusun->id }}" name="image" accept="image/*">
+                                                        <div class="form-text">Kosongkan jika tidak ingin mengubah gambar</div>
+                                                    </div>
+                                                    <div class="form-check mb-3">
+                                                        <input class="form-check-input" type="checkbox" id="dusun_is_active{{ $dusun->id }}" name="is_active" value="1" {{ $dusun->is_active ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="dusun_is_active{{ $dusun->id }}">
+                                                            Aktif
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endforeach
+                                
+                                @if($dusuns->isEmpty())
+                                <div class="list-group-item text-center text-muted py-4">
+                                    <i class="fas fa-map-marker-alt fa-3x mb-3"></i>
+                                    <p>Belum ada data dusun. Tambahkan data dusun pertama.</p>
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -547,6 +793,126 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-primary">Simpan Slider</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah About Slider -->
+    <div class="modal fade" id="tambahAboutSliderModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah Slider Tentang Desa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('admin.pengaturan.about-slider.tambah') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="about_title" class="form-label">Judul</label>
+                            <input type="text" class="form-control" id="about_title" name="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="about_description" class="form-label">Deskripsi</label>
+                            <textarea class="form-control" id="about_description" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="about_image" class="form-label">Gambar</label>
+                            <input type="file" class="form-control" id="about_image" name="image" accept="image/*" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="about_order" class="form-label">Urutan</label>
+                            <input type="number" class="form-control" id="about_order" name="order" value="0">
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="about_is_active" name="is_active" value="1" checked>
+                            <label class="form-check-label" for="about_is_active">
+                                Aktif
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan Slider</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Dusun -->
+    <div class="modal fade" id="tambahDusunModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah Data Dusun</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('admin.pengaturan.dusun.tambah') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="dusun_name" class="form-label">Nama Dusun</label>
+                                    <input type="text" class="form-control" id="dusun_name" name="name" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="dusun_order" class="form-label">Urutan</label>
+                                    <input type="number" class="form-control" id="dusun_order" name="order" value="0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="dusun_head_name" class="form-label">Nama Kepala Dusun</label>
+                                    <input type="text" class="form-control" id="dusun_head_name" name="head_name">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="dusun_head_phone" class="form-label">Telepon Kepala Dusun</label>
+                                    <input type="text" class="form-control" id="dusun_head_phone" name="head_phone">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="dusun_population" class="form-label">Jumlah Penduduk</label>
+                                    <input type="number" class="form-control" id="dusun_population" name="population" value="0" min="0">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="dusun_households" class="form-label">Jumlah KK</label>
+                                    <input type="number" class="form-control" id="dusun_households" name="households" value="0" min="0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="dusun_description" class="form-label">Deskripsi</label>
+                            <textarea class="form-control" id="dusun_description" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="dusun_image" class="form-label">Gambar</label>
+                            <input type="file" class="form-control" id="dusun_image" name="image" accept="image/*">
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="dusun_is_active" name="is_active" value="1" checked>
+                            <label class="form-check-label" for="dusun_is_active">
+                                Aktif
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan Dusun</button>
                     </div>
                 </form>
             </div>
@@ -610,21 +976,47 @@
 
           // Script untuk menangani modal errors
           @if($errors->any())
-            @if($errors->has('title') || $errors->has('description') || $errors->has('image'))
-                document.addEventListener('DOMContentLoaded', function() {
-                    var modal = new bootstrap.Modal(document.getElementById('tambahSliderModal'));
-                    modal.show();
-                });
-            @endif
-            @foreach($sliders as $slider)
-                @if($errors->has('title.'.$slider->id) || $errors->has('description.'.$slider->id))
+                @if($errors->has('title') || $errors->has('description') || $errors->has('image'))
                     document.addEventListener('DOMContentLoaded', function() {
-                        var modal = new bootstrap.Modal(document.getElementById('editSliderModal{{ $slider->id }}'));
+                        var modal = new bootstrap.Modal(document.getElementById('tambahSliderModal'));
                         modal.show();
                     });
                 @endif
-            @endforeach
-        @endif
+                @foreach($sliders as $slider)
+                    @if($errors->has('title.'.$slider->id) || $errors->has('description.'.$slider->id))
+                        document.addEventListener('DOMContentLoaded', function() {
+                            var modal = new bootstrap.Modal(document.getElementById('editSliderModal{{ $slider->id }}'));
+                            modal.show();
+                        });
+                    @endif
+                @endforeach
+            @endif
+
+            // Script untuk menangani modal errors
+            @if($errors->any())
+                @if($errors->has('title') || $errors->has('description') || $errors->has('image'))
+                    @if(request()->is('admin/pengaturan/informasi'))
+                        document.addEventListener('DOMContentLoaded', function() {
+                            var modal = new bootstrap.Modal(document.getElementById('tambahSliderModal'));
+                            modal.show();
+                        });
+                    @endif
+                @endif
+                
+                @if($errors->has('about_title') || $errors->has('about_description') || $errors->has('about_image'))
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var modal = new bootstrap.Modal(document.getElementById('tambahAboutSliderModal'));
+                        modal.show();
+                    });
+                @endif
+                
+                @if($errors->has('dusun_name') || $errors->has('dusun_head_name') || $errors->has('dusun_image'))
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var modal = new bootstrap.Modal(document.getElementById('tambahDusunModal'));
+                        modal.show();
+                    });
+                @endif
+            @endif
     </script>
            
 </body>

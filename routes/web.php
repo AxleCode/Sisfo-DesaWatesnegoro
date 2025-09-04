@@ -34,7 +34,18 @@ Route::middleware('auth')->group(function () {
         Route::post('/slider/tambah', [PengaturanController::class, 'simpanSlider'])->name('admin.pengaturan.slider.tambah');
         Route::post('/slider/update/{id}', [PengaturanController::class, 'updateSlider'])->name('admin.pengaturan.slider.update');
         Route::delete('/slider/hapus/{id}', [PengaturanController::class, 'hapusSlider'])->name('admin.pengaturan.slider.hapus');
+
+         // Routes untuk about slider
+        Route::post('/about-slider/tambah', [PengaturanController::class, 'simpanAboutSlider'])->name('admin.pengaturan.about-slider.tambah');
+        Route::post('/about-slider/update/{id}', [PengaturanController::class, 'updateAboutSlider'])->name('admin.pengaturan.about-slider.update');
+        Route::delete('/about-slider/hapus/{id}', [PengaturanController::class, 'hapusAboutSlider'])->name('admin.pengaturan.about-slider.hapus');
+        
+        // Routes untuk dusun
+        Route::post('/dusun/tambah', [PengaturanController::class, 'simpanDusun'])->name('admin.pengaturan.dusun.tambah');
+        Route::post('/dusun/update/{id}', [PengaturanController::class, 'updateDusun'])->name('admin.pengaturan.dusun.update');
+        Route::delete('/dusun/hapus/{id}', [PengaturanController::class, 'hapusDusun'])->name('admin.pengaturan.dusun.hapus');
     });
+    
     
     // Route untuk warga
     // Route::middleware('check.role:warga')->prefix('warga')->group(function () {

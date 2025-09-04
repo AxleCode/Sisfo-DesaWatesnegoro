@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Slider;
+use App\Models\AboutSlider;
+use App\Models\Dusun;
+// use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
@@ -14,6 +17,28 @@ class HomeController extends Controller
                         ->orderBy('order', 'asc')
                         ->get();
 
-        return view('home', compact('sliders'));
+        // Ambil slider tentang desa yang aktif
+        $aboutSliders = AboutSlider::where('is_active', true)
+                            ->orderBy('order', 'asc')
+                            ->get();
+
+        // Ambil data dusun yang aktif
+        $dusuns = Dusun::where('is_active', true)
+                        ->orderBy('order', 'asc')
+                        ->get();
+
+        // Hitung total penduduk dan KK dari semua dusun
+        $totalPenduduk = $dusuns->sum('population');
+        $totalKK = $dusuns->sum('households');
+        $jumlahDusun = $dusuns->count();
+
+        return view('home', compact(
+            'sliders', 
+            'aboutSliders', 
+            'dusuns',
+            'totalPenduduk',
+            'totalKK',
+            'jumlahDusun'
+        ));
     }
 }

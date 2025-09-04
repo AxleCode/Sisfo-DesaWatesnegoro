@@ -179,8 +179,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
             <a class="navbar-brand d-flex flex-column align-items-start" href="#">
-                <img src="images/FElogo.png" class="mb-1" alt="Logo" width="200px">
-                <span class="fs-5">
+                <img src="images/FElogo.png" class="mb-1" alt="Logo" width="170px">
+                <span class="fs-6">
                     Pemerintah Desa Watesnegoro
                 </span>
             </a>
@@ -264,31 +264,89 @@
     <section id="about" class="about-section">
         <div class="container">
             <h2 class="section-title">Tentang Desa Kami</h2>
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <img src="https://images.unsplash.com/photo-1540957903151-7e766663e0d2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Desa Watesnegoro" class="img-fluid rounded shadow">
-                </div>
-                <div class="col-lg-6">
-                    <h3>Desa Watesnegoro</h3>
-                    <p>Desa Watesnegoro adalah sebuah desa yang terletak di kecamatan yang subur dengan pemandangan alam yang indah. Desa kami memiliki berbagai potensi dalam bidang pertanian, peternakan, dan kerajinan tangan.</p>
-                    <p>Masyarakat Desa Watesnegoro hidup rukun dan damai dengan gotong royong yang masih kuat dijaga. Berbagai kegiatan kemasyarakatan rutin diselenggarakan untuk mempererat tali silaturahmi antar warga.</p>
-                    <p>Visi kami adalah "Mewujudkan Desa Watesnegoro yang Mandiri, Sejahtera, dan Berbudaya". Sedangkan misi kami adalah meningkatkan kualitas sumber daya manusia, mengembangkan potensi lokal, dan meningkatkan pelayanan publik.</p>
-                    <div class="d-flex justify-content-between mt-4">
-                        <div class="text-center">
-                            <h4 class="text-primary">5,247</h4>
-                            <p>Jumlah Penduduk</p>
+            
+            <!-- About Slider/Carousel -->
+            @if($aboutSliders->count() > 0)
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div id="aboutCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-indicators">
+                            @foreach($aboutSliders as $index => $slider)
+                            <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="{{ $index }}" 
+                                class="{{ $index === 0 ? 'active' : '' }}"></button>
+                            @endforeach
                         </div>
-                        <div class="text-center">
-                            <h4 class="text-primary">12</h4>
-                            <p>Dusun</p>
+                        <div class="carousel-inner rounded">
+                            @foreach($aboutSliders as $index => $slider)
+                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                <img src="{{ asset('storage/' . $slider->image) }}" class="d-block w-100" alt="{{ $slider->title }}" style="height: 100%; object-fit: cover; width:100%;">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>{{ $slider->title }}</h5>
+                                    <p>{{ $slider->description }}</p>
+                                </div>
+                            </div>
+                            @endforeach
                         </div>
-                        <div class="text-center">
-                            <h4 class="text-primary">25</h4>
-                            <p>RT</p>
-                        </div>
+                        @if($aboutSliders->count() > 1)
+                        <button class="carousel-control-prev" type="button" data-bs-target="#aboutCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#aboutCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                        @endif
                     </div>
                 </div>
             </div>
+            @endif
+
+            <!-- Data Dusun Section -->
+            @if($dusuns->count() > 0)
+            <div class="row mt-5">
+                <div class="col-12">
+                    <h3 class="section-title">Dusun di Desa Watesnegoro</h3>
+                    <div class="row">
+                        @foreach($dusuns as $dusun)
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                @if($dusun->image)
+                                <img src="{{ asset('storage/' . $dusun->image) }}" class="card-img-top" alt="{{ $dusun->name }}" style="height: 200px; object-fit: cover;">
+                                @else
+                                <img src="https://images.unsplash.com/photo-1567016376408-22d2b7dfc7b9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="{{ $dusun->name }}" style="height: 200px; object-fit: cover;">
+                                @endif
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ $dusun->name }}</h5>
+                                    @if($dusun->head_name)
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            <i class="fas fa-user me-1"></i>Kepala Dusun: {{ $dusun->head_name }}
+                                            @if($dusun->head_phone)
+                                            <br><i class="fas fa-phone me-1"></i>{{ $dusun->head_phone }}
+                                            @endif
+                                        </small>
+                                    </p>
+                                    @endif
+                                    <div class="d-flex justify-content-between">
+                                        <span class="badge bg-primary">
+                                            <i class="fas fa-users me-1"></i>{{ number_format($dusun->population) }} Penduduk
+                                        </span>
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-home me-1"></i>{{ number_format($dusun->households) }} KK
+                                        </span>
+                                    </div>
+                                    @if($dusun->description)
+                                    <p class="card-text mt-2 small">{{ Str::limit($dusun->description, 100) }}</p>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            @endif
         </div>
     </section>
 
@@ -440,6 +498,18 @@
         var carousel = new bootstrap.Carousel(myCarousel, {
             interval: 5000,
             wrap: true
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+        // Inisialisasi carousel dengan interval 4 detik
+        var aboutCarousel = document.getElementById('aboutCarousel');
+            if (aboutCarousel) {
+                var carousel = new bootstrap.Carousel(aboutCarousel, {
+                    interval: 4000,
+                    wrap: true,
+                    pause: false
+                });
+            }
         });
 
 </script>
