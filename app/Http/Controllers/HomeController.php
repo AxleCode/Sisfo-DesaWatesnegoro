@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Slider;
 use App\Models\AboutSlider;
 use App\Models\Dusun;
+use App\Models\File;
 // use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
@@ -32,13 +33,19 @@ class HomeController extends Controller
         $totalKK = $dusuns->sum('households');
         $jumlahDusun = $dusuns->count();
 
+        // Ambil file yang aktif
+        $files = File::where('is_active', true)
+                        ->orderBy('order', 'asc')
+                        ->get();
+
         return view('home', compact(
             'sliders', 
             'aboutSliders', 
             'dusuns',
             'totalPenduduk',
             'totalKK',
-            'jumlahDusun'
+            'jumlahDusun',
+            'files'
         ));
     }
 }
