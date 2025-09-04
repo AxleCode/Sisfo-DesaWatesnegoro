@@ -59,7 +59,7 @@
         }
         
         .hero-slider {
-            height: 80vh;
+            height: 88vh;
             overflow: hidden;
         }
         
@@ -141,11 +141,48 @@
         }
 
         .hero-slider .carousel-item {
-    height: 80vh;
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-}
+            height: 88vh;
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .download-section {
+            padding: 80px 0;
+            background-color: #f8f9fa;
+        }
+
+        .download-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        .download-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .download-item h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .download-item p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .toggle-files {
+            transition: all 0.3s ease;
+        }
+
+        .toggle-files:hover {
+            transform: translateY(-2px);
+        }
 
 /* Untuk mobile responsiveness */
 @media (max-width: 768px) {
@@ -210,7 +247,7 @@
     </nav>
 
     <!-- Hero Slider Section -->
-    <section class="hero-slider">
+    <section class="hero-slider" >
         <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
             
             <!-- Carousel Indicators -->
@@ -411,35 +448,55 @@
             <p class="text-center mb-5">Silakan unduh formulir dan dokumen penting yang disediakan oleh pemerintah desa</p>
             
             <div class="row">
-                <div class="col-md-6">
+                @foreach($files->take(4) as $file)
+                <div class="col-md-6 mb-4">
                     <div class="download-item">
-                        <h4><i class="far fa-file-pdf text-danger me-2"></i> Formulir Pengajuan KTP</h4>
-                        <p>Formulir untuk mengajukan pembuatan Kartu Tanda Penduduk (KTP)</p>
-                        <a href="#" class="btn btn-sm btn-outline-danger">Download PDF</a>
+                        <h4><i class="{{ $file->getIconClass() }} me-2"></i> {{ $file->title }}</h4>
+                        <p>{{ $file->description }}</p>
+                        <a href="{{ route('file.download', $file->id) }}" class="btn btn-sm {{ $file->getButtonClass() }}">
+                            Download {{ strtoupper($file->file_type) }}
+                        </a>
+                        <small class="text-muted ms-2">{{ $file->download_count }}x diunduh</small>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="download-item">
-                        <h4><i class="far fa-file-word text-primary me-2"></i> Formulir Pengajuan KK</h4>
-                        <p>Formulir untuk mengajukan pembuatan Kartu Keluarga (KK)</p>
-                        <a href="#" class="btn btn-sm btn-outline-primary">Download DOC</a>
+                @endforeach
+                
+                @if($files->count() === 0)
+                <div class="col-12 text-center">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Belum ada file yang tersedia untuk diunduh.
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="download-item">
-                        <h4><i class="far fa-file-excel text-success me-2"></i> Data Penduduk 2023</h4>
-                        <p>Data kependudukan Desa Watesnegoro per Oktober 2023</p>
-                        <a href="#" class="btn btn-sm btn-outline-success">Download XLS</a>
+                @endif
+            </div>
+    
+            <!-- Bagian collapse untuk file tambahan -->
+            @if($files->count() > 4)
+            <div id="more-downloads" class="collapse mt-4">
+                <div class="row">
+                    @foreach($files->skip(4) as $file)
+                    <div class="col-md-6 mb-4">
+                        <div class="download-item">
+                            <h4><i class="{{ $file->getIconClass() }} me-2"></i> {{ $file->title }}</h4>
+                            <p>{{ $file->description }}</p>
+                            <a href="{{ route('file.download', $file->id) }}" class="btn btn-sm {{ $file->getButtonClass() }}">
+                                Download {{ strtoupper($file->file_type) }}
+                            </a>
+                            <small class="text-muted ms-2">{{ $file->download_count }}x diunduh</small>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="download-item">
-                        <h4><i class far fa-file-pdf text-danger me-2"></i> Laporan Keuangan Desa</h4>
-                        <p>Laporan realisasi anggaran pendapatan dan belanja desa tahun 2023</p>
-                        <a href="#" class="btn btn-sm btn-outline-danger">Download PDF</a>
-                    </div>
+                    @endforeach
                 </div>
             </div>
+    
+            <!-- Tombol toggle taruh di paling bawah -->
+            <div class="text-center mt-3">
+                <a id="toggleButton" href="#more-downloads" class="btn btn-outline-primary" data-bs-toggle="collapse" aria-expanded="false">
+                    <i class="fas fa-chevron-down me-2"></i>Lihat File Lainnya
+                </a>
+            </div>
+            @endif
         </div>
     </section>
 
@@ -512,6 +569,18 @@
             }
         });
 
+        document.addEventListener("DOMContentLoaded", function() {
+            const toggleButton = document.getElementById("toggleButton");
+            const collapseElement = document.getElementById("more-downloads");
+
+            collapseElement.addEventListener("shown.bs.collapse", function () {
+                toggleButton.innerHTML = '<i class="fas fa-chevron-up me-2"></i>Lebih Sedikit';
+            });
+
+            collapseElement.addEventListener("hidden.bs.collapse", function () {
+                toggleButton.innerHTML = '<i class="fas fa-chevron-down me-2"></i>Lihat File Lainnya';
+            });
+        });
 </script>
 
 

@@ -18,25 +18,14 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#subMenu1" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                        <i class="fas fa-newspaper"></i> Berita & Artikel
+                    <a href="#" class="{{ Request::is('admin/dashboard') ? 'active' : '' }}">
+                        <i class="fas fa-newspaper"></i> Daftar Berita
                     </a>
-                    <ul class="sub-menu collapse" id="subMenu1">
-                        <li><a href="#"><i class="fas fa-list"></i> Daftar Berita</a></li>
-                        <li><a href="#"><i class="fas fa-plus"></i> Tambah Berita</a></li>
-                        <li><a href="#"><i class="fas fa-tags"></i> Kategori</a></li>
-                        <li><a href="#"><i class="fas fa-clock"></i> Jadwal Publikasi</a></li>
-                    </ul>
                 </li>
                 <li>
-                    <a href="#subMenu2" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <a href="{{ route('admin.file') }}" class="{{ Request::is('admin/file') ? 'active' : '' }}">
                         <i class="fas fa-download"></i> File Download
                     </a>
-                    <ul class="sub-menu collapse" id="subMenu2">
-                        <li><a href="#"><i class="fas fa-list"></i> Daftar File</a></li>
-                        <li><a href="#"><i class="fas fa-upload"></i> Unggah File</a></li>
-                        <li><a href="#"><i class="fas fa-folder"></i> Kategori File</a></li>
-                    </ul>
                 </li>
                 <li>
                     <a href="#subMenu4" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
@@ -44,13 +33,13 @@
                     </a>
                     <ul class="sub-menu collapse" id="subMenu4">
                         <li><a href="{{ route('admin.pengaturan.informasi') }}"><i class="fas fa-info-circle"></i> Informasi Website</a></li>
-                        <li><a href="#"><i class="fas fa-sliders-h"></i> Umum</a></li>
-                        <li><a href="#"><i class="fas fa-image"></i> Tampilan</a></li>
+                        <li><a href="#"><i class="fas fa-sliders-h"></i> Setup Website</a></li>
+                        {{-- <li><a href="#"><i class="fas fa-image"></i> Tampilan</a></li>
                         <li><a href="#"><i class="fas fa-user-shield"></i> Hak Akses</a></li>
-                        <li><a href="#"><i class="fas fa-database"></i> Backup Data</a></li>
+                        <li><a href="#"><i class="fas fa-database"></i> Backup Data</a></li> --}}
                     </ul>
                 </li>
-                <li>
+                {{-- <li>
                     <a href="#">
                         <i class="fas fa-calendar-alt"></i> Kalender Kegiatan
                     </a>
@@ -59,7 +48,7 @@
                     <a href="#">
                         <i class="fas fa-map-marked-alt"></i> Peta Desa
                     </a>
-                </li>
+                </li> --}}
                 <li>
                     <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="fas fa-sign-out-alt"></i> Logout

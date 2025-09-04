@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\FileController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index']);
@@ -46,7 +47,15 @@ Route::middleware('auth')->group(function () {
         Route::delete('/dusun/hapus/{id}', [PengaturanController::class, 'hapusDusun'])->name('admin.pengaturan.dusun.hapus');
     });
     
-    
+    // Route untuk file management
+    Route::prefix('file')->group(function () {
+        Route::get('/', [FileController::class, 'index'])->name('admin.file');
+        Route::post('/tambah', [FileController::class, 'store'])->name('admin.file.tambah');
+        Route::post('/update/{id}', [FileController::class, 'update'])->name('admin.file.update');
+        Route::delete('/hapus/{id}', [FileController::class, 'destroy'])->name('admin.file.hapus');
+        Route::get('/download/{id}', [FileController::class, 'download'])->name('file.download');
+    });
+
     // Route untuk warga
     // Route::middleware('check.role:warga')->prefix('warga')->group(function () {
     //     Route::get('/dashboard', function () {
