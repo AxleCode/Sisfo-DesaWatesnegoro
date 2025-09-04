@@ -7,6 +7,7 @@ use App\Models\Slider;
 use App\Models\AboutSlider;
 use App\Models\Dusun;
 use App\Models\File;
+use App\Models\Setting;
 // use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller

@@ -33,7 +33,7 @@
                     </a>
                     <ul class="sub-menu collapse" id="subMenu4">
                         <li><a href="{{ route('admin.pengaturan.informasi') }}"><i class="fas fa-info-circle"></i> Informasi Website</a></li>
-                        <li><a href="#"><i class="fas fa-sliders-h"></i> Setup Website</a></li>
+                        <li><a href="{{ route('admin.setup') }}"><i class="fas fa-sliders-h"></i> Setup Website</a></li>
                         {{-- <li><a href="#"><i class="fas fa-image"></i> Tampilan</a></li>
                         <li><a href="#"><i class="fas fa-user-shield"></i> Hak Akses</a></li>
                         <li><a href="#"><i class="fas fa-database"></i> Backup Data</a></li> --}}

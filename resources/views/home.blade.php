@@ -216,7 +216,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
             <a class="navbar-brand d-flex flex-column align-items-start" href="#">
-                <img src="images/FElogo.png" class="mb-1" alt="Logo" width="170px">
+                <img src="{{ asset('storage/' . setting('site_logo')) }}" class="mb-1" alt="Logo" width="170px">
                 <span class="fs-6">
                     Pemerintah Desa Watesnegoro
                 </span>
@@ -505,36 +505,42 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 mb-4">
-                    <h4>Desa Watesnegoro</h4>
-                    <p>Jl. Raya Gempol - Mojokerto</p>
-                    <p>Kecamatan Ngoro, Kabupaten Mojokerto</p>
-                    <p>Provinsi Jawa Timur, Indonesia</p>
+                    <h4>{{ setting('site_name', 'Desa Watesnegoro') }}</h4>
+                    <p>{{ setting('address', 'Jl. Raya Gempol - Mojokerto') }}</p>
                 </div>
                 <div class="col-lg-4 mb-4">
                     <h4>Kontak Kami</h4>
-                    <p><i class="fas fa-phone me-2"></i> (021) 1234-5678</p>
-                    <!-- {{-- <p><i class="fas fa-envelope me-2"></i> info@desamakmur.id</p> --}} -->
-                    <p><i class="fas fa-clock me-2"></i> Senin - Jumat: 08:00 - 16:00</p>
+                    <p><i class="fas fa-phone me-2"></i> {{ setting('phone', '(021) 1234-5678') }}</p>
+                    <p><i class="fas fa-envelope me-2"></i> {{ setting('email', 'info@watesnegoro.desa.id') }}</p>
+                    <p><i class="fas fa-clock me-2"></i> {{ setting('working_hours', 'Senin - Jumat: 08:00 - 16:00') }}</p>
                 </div>
                 <div class="col-lg-4 mb-4">
                     <h4>Follow Kami</h4>
                     <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        @php
+                            $socialMedia = \App\Models\Setting::getSocialMedia();
+                        @endphp
+                        <a href="{{ $socialMedia['facebook'] ?? '#' }}"><i class="fab fa-facebook"></i></a>
+                        <a href="{{ $socialMedia['twitter'] ?? '#' }}"><i class="fab fa-twitter"></i></a>
+                        <a href="{{ $socialMedia['instagram'] ?? '#' }}"><i class="fab fa-instagram"></i></a>
+                        <a href="{{ $socialMedia['youtube'] ?? '#' }}"><i class="fab fa-youtube"></i></a>
                     </div>
+                    
                     <div class="mt-3 d-flex flex-column align-items-start">
-                        <img src="images/FElogo.png" class="mb-1" alt="Logo Desa" width="250px" class="img-fluid">
+                        @if(setting('footer_logo'))
+                        <img src="{{ asset('storage/' . setting('footer_logo')) }}" class="mb-1" alt="Logo Desa" width="250px" class="img-fluid">
+                        @else
+                        <img src="{{ asset('images/FElogo.png') }}" class="mb-1" alt="Logo Desa" width="250px" class="img-fluid">
+                        @endif
                         <span class="fs-4">
-                           Pemerintah Desa Watesnegoro
+                            {{ setting('footer_text', 'Pemerintah Desa Watesnegoro') }}
                         </span>
                     </div>
                 </div>
             </div>
             <hr class="my-4 bg-light">
             <div class="text-center">
-                <p>&copy; 2025 Pemerintah Desa Watesnegoro. All Rights Reserved.</p>
+                <p>{{ setting('copyright', '© 2025 Pemerintah Desa Watesnegoro. All Rights Reserved.') }}</p>
             </div>
         </div>
     </footer>

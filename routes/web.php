@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\SetupController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index']);
@@ -54,6 +55,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/update/{id}', [FileController::class, 'update'])->name('admin.file.update');
         Route::delete('/hapus/{id}', [FileController::class, 'destroy'])->name('admin.file.hapus');
         Route::get('/download/{id}', [FileController::class, 'download'])->name('file.download');
+    });
+
+    // Route untuk setup website
+    Route::prefix('setup')->group(function () {
+        Route::get('/', [SetupController::class, 'index'])->name('admin.setup');
+        Route::post('/simpan', [SetupController::class, 'store'])->name('admin.setup.simpan');
     });
 
     // Route untuk warga
