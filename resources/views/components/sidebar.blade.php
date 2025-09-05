@@ -18,7 +18,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="{{ Request::is('admin/dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('admin.berita') }}" class="{{ Request::is('admin/berita*') ? 'active' : '' }}">
                         <i class="fas fa-newspaper"></i> Daftar Berita
                     </a>
                 </li>
@@ -27,6 +27,11 @@
                         <i class="fas fa-download"></i> File Download
                     </a>
                 </li>
+                <li>
+                    <a href="#">
+                        <i class="fas fa-map-marked-alt"></i> Peta Desa
+                    </a>
+                </li> 
                 <li>
                     <a href="#subMenu4" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                         <i class="fas fa-cog"></i> Pengaturan
@@ -43,12 +48,8 @@
                     <a href="#">
                         <i class="fas fa-calendar-alt"></i> Kalender Kegiatan
                     </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="fas fa-map-marked-alt"></i> Peta Desa
-                    </a>
-                </li> --}}
+                </li>--}}
+                
                 <li>
                     <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="fas fa-sign-out-alt"></i> Logout

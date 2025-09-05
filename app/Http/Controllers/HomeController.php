@@ -8,6 +8,7 @@ use App\Models\AboutSlider;
 use App\Models\Dusun;
 use App\Models\File;
 use App\Models\Setting;
+use App\Models\News;
 // use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
@@ -39,6 +40,13 @@ class HomeController extends Controller
                         ->orderBy('order', 'asc')
                         ->get();
 
+         // Ambil berita terbaru
+        $latestNews = News::with('category')
+                ->where('is_published', true)
+                ->latest()
+                ->take(3)
+                ->get();
+
         return view('home', compact(
             'sliders', 
             'aboutSliders', 
@@ -46,7 +54,8 @@ class HomeController extends Controller
             'totalPenduduk',
             'totalKK',
             'jumlahDusun',
-            'files'
+            'files',
+            'latestNews'
         ));
     }
 }

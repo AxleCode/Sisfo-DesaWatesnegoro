@@ -299,7 +299,7 @@
 
     <!-- About Section -->
     <section id="about" class="about-section">
-        <div class="container">
+        <div class="container" style="margin-top: 10px">
             <h2 class="section-title">Tentang Desa Kami</h2>
             
             <!-- About Slider/Carousel -->
@@ -389,61 +389,48 @@
 
     <!-- News Section -->
     <section id="news" class="news-section">
-        <div class="container">
+        <div class="container" style="margin-top: 10px">
             <h2 class="section-title">Berita dan Informasi Terbaru</h2>
             <div class="row">
+                @foreach($latestNews as $news)
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card news-card">
-                        <img src="https://images.unsplash.com/photo-1584697964358-3e14ca57658b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="Berita 1">
+                        <img src="{{ asset('storage/' . $news->featured_image) }}" class="card-img-top" alt="{{ $news->title }}" style="height: 200px; object-fit: cover;">
                         <div class="card-body">
-                            <span class="badge bg-primary mb-2">Pengumuman</span>
-                            <h5 class="card-title">Pelaksanaan Kerja Bakti Bersama</h5>
-                            <p class="card-text">Akan diadakan kerja bakti pada hari Minggu, 12 November 2023 di seluruh wilayah Desa Watesnegoro.</p>
+                            <span class="badge bg-{{ $news->category->color }} mb-2">{{ $news->category->name }}</span>
+                            <h5 class="card-title">{{ $news->title }}</h5>
+                            <p class="card-text">{{ $news->excerpt }}</p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted"><i class="far fa-calendar me-1"></i> 5 Hari Lalu</small>
-                                <a href="#" class="btn btn-sm btn-outline-primary">Baca Selengkapnya</a>
+                                <small class="text-muted">
+                                    <i class="far fa-calendar me-1"></i>
+                                    {{ $news->created_at->locale('id')->diffForHumans() }}
+
+                                </small>
+                                <a href="{{ route('berita.show', $news->slug) }}" class="btn btn-sm btn-outline-primary">Baca Selengkapnya</a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card news-card">
-                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="Berita 2">
-                        <div class="card-body">
-                            <span class="badge bg-success mb-2">Kegiatan</span>
-                            <h5 class="card-title">Pelatihan Pembuatan Kerajinan Tangan</h5>
-                            <p class="card-text">Dinas Perindustrian memberikan pelatihan pembuatan kerajinan tangan dari bahan bambu.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted"><i class="far fa-calendar me-1"></i> 1 Minggu Lalu</small>
-                                <a href="#" class="btn btn-sm btn-outline-primary">Baca Selengkapnya</a>
-                            </div>
-                        </div>
+                @endforeach
+                
+                @if($latestNews->isEmpty())
+                <div class="col-12 text-center">
+                    <div class="alert alert-info">
+                        <i class="fas fa-newspaper me-2"></i>
+                        Belum ada berita terbaru.
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card news-card">
-                        <img src="https://images.unsplash.com/photo-1577720643272-265f0936742f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="Berita 3">
-                        <div class="card-body">
-                            <span class="badge bg-info mb-2">Informasi</span>
-                            <h5 class="card-title">Penerimaan Bantuan Sosial Tahap II</h5>
-                            <p class="card-text">Pemerintah desa membuka pendaftaran untuk bantuan sosial tahap II bagi warga yang memenuhi syarat.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted"><i class="far fa-calendar me-1"></i> 2 Minggu Lalu</small>
-                                <a href="#" class="btn btn-sm btn-outline-primary">Baca Selengkapnya</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @endif
             </div>
             <div class="text-center mt-4">
-                <a href="#" class="btn btn-primary">Lihat Berita Lainnya</a>
+                <a href="{{ route('berita') }}" class="btn btn-primary">Lihat Berita Lainnya</a>
             </div>
         </div>
     </section>
 
     <!-- Download Section -->
     <section id="download" class="download-section">
-        <div class="container">
+        <div class="container" style="margin-top: 10px">
             <h2 class="section-title">Download File</h2>
             <p class="text-center mb-5">Silakan unduh formulir dan dokumen penting yang disediakan oleh pemerintah desa</p>
             
@@ -511,7 +498,7 @@
                 <div class="col-lg-4 mb-4">
                     <h4>Kontak Kami</h4>
                     <p><i class="fas fa-phone me-2"></i> {{ setting('phone', '(021) 1234-5678') }}</p>
-                    <p><i class="fas fa-envelope me-2"></i> {{ setting('email', 'info@watesnegoro.desa.id') }}</p>
+                    {{-- <p><i class="fas fa-envelope me-2"></i> {{ setting('email', 'info@watesnegoro.desa.id') }}</p> --}}
                     <p><i class="fas fa-clock me-2"></i> {{ setting('working_hours', 'Senin - Jumat: 08:00 - 16:00') }}</p>
                 </div>
                 <div class="col-lg-4 mb-4">

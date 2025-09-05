@@ -6,25 +6,26 @@ use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\SetupController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\CategoryController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index']);
+
+// Routes untuk berita di frontend (harus di luar middleware auth)
+Route::get('/berita', [NewsController::class, 'list'])->name('berita');
+Route::get('/berita/{slug}', [NewsController::class, 'show'])->name('berita.show');
 
 // Route untuk authentication
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Route untuk halaman admin (login form)
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-
 // Route yang membutuhkan authentication
 Route::middleware('auth')->group(function () {
-    // Hapus route dashboard umum atau beri nama yang berbeda
-    // Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
     
     // Route untuk admin
-    Route::middleware('check.role:admin,staff')->prefix('login')->group(function () {
+    Route::middleware('check.role:admin,staff')->prefix('admin')->group(function () {
         Route::get('/dashboard', function () {
             return view('dashboard.dashboard');
         })->name('admin.dashboard');
@@ -37,7 +38,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/slider/update/{id}', [PengaturanController::class, 'updateSlider'])->name('admin.pengaturan.slider.update');
         Route::delete('/slider/hapus/{id}', [PengaturanController::class, 'hapusSlider'])->name('admin.pengaturan.slider.hapus');
 
-         // Routes untuk about slider
+        // Routes untuk about slider
         Route::post('/about-slider/tambah', [PengaturanController::class, 'simpanAboutSlider'])->name('admin.pengaturan.about-slider.tambah');
         Route::post('/about-slider/update/{id}', [PengaturanController::class, 'updateAboutSlider'])->name('admin.pengaturan.about-slider.update');
         Route::delete('/about-slider/hapus/{id}', [PengaturanController::class, 'hapusAboutSlider'])->name('admin.pengaturan.about-slider.hapus');
@@ -63,13 +64,24 @@ Route::middleware('auth')->group(function () {
         Route::post('/simpan', [SetupController::class, 'store'])->name('admin.setup.simpan');
     });
 
-    // Route untuk warga
-    // Route::middleware('check.role:warga')->prefix('warga')->group(function () {
-    //     Route::get('/dashboard', function () {
-    //         return view('warga.dashboard');
-    //     })->name('warga.dashboard');
-    // });
-    
+    // Routes untuk berita di admin
+    Route::prefix('admin/berita')->group(function () {
+        Route::get('/', [NewsController::class, 'index'])->name('admin.berita');
+        Route::get('/tambah', [NewsController::class, 'create'])->name('admin.berita.tambah');
+        Route::post('/tambah', [NewsController::class, 'store'])->name('admin.berita.simpan');
+        Route::get('/edit/{news}', [NewsController::class, 'edit'])->name('admin.berita.edit');
+        Route::post('/update/{news}', [NewsController::class, 'update'])->name('admin.berita.update');
+        Route::delete('/hapus/{news}', [NewsController::class, 'destroy'])->name('admin.berita.hapus');
+    });
+
+    // Routes untuk kategori
+    Route::prefix('admin/kategori')->group(function () {
+        Route::get('/', [CategoryController::class, 'index'])->name('admin.kategori');
+        Route::post('/tambah', [CategoryController::class, 'store'])->name('admin.kategori.tambah');
+        Route::post('/update/{category}', [CategoryController::class, 'update'])->name('admin.kategori.update');
+        Route::delete('/hapus/{category}', [CategoryController::class, 'destroy'])->name('admin.kategori.hapus');
+    });
+
     // Route dashboard umum yang mengarahkan berdasarkan role
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 });

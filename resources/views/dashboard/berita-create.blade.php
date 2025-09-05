@@ -375,172 +375,103 @@
             <div class="container-fluid">
                 <div class="row mb-4">
                     <div class="col-12">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h2 class="mb-0">Manajemen Berita</h2>
-                            <a href="{{ route('admin.berita.tambah') }}" class="btn btn-primary">
-                                <i class="fas fa-plus me-2"></i>Tambah Berita
-                            </a>
-                        </div>
+                        <h2 class="mb-4">{{ isset($news) ? 'Edit' : 'Tambah' }} Berita</h2>
                         
-                        @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-                                <i class="fas fa-check-circle me-2"></i>
-                                {{ session('success') }}
+                        @if($errors->any())
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                Terdapat kesalahan dalam input data. Silakan periksa kembali.
+                                <ul class="mb-0 mt-2">
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         @endif
                     </div>
                 </div>
         
-                <!-- Filter Section -->
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="setting-card">
-                            <h5 class="mb-3">Filter Berita</h5>
-                            <form method="GET" action="{{ route('admin.berita') }}">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="mb-3">
-                                            <label class="form-label">Kategori</label>
-                                            <select name="category" class="form-select">
-                                                <option value="all">Semua Kategori</option>
-                                                @foreach($categories as $category)
-                                                <option value="{{ $category->slug }}" {{ request('category') == $category->slug ? 'selected' : '' }}>
-                                                    {{ $category->name }}
-                                                </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="mb-3">
-                                            <label class="form-label">Tahun</label>
-                                            <select name="year" class="form-select">
-                                                <option value="all">Semua Tahun</option>
-                                                @foreach($years as $year)
-                                                <option value="{{ $year }}" {{ request('year') == $year ? 'selected' : '' }}>
-                                                    {{ $year }}
-                                                </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="mb-3">
-                                            <label class="form-label">Status</label>
-                                            <select name="status" class="form-select">
-                                                <option value="all">Semua Status</option>
-                                                <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>Published</option>
-                                                <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="mb-3">
-                                            <label class="form-label">&nbsp;</label>
-                                            <div class="d-grid">
-                                                <button type="submit" class="btn btn-primary">Filter</button>
-                                            </div>
-                                        </div>
-                                    </div>
+                <form action="{{ isset($news) ? route('admin.berita.update', $news) : route('admin.berita.simpan') }}" 
+                      method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @if(isset($news)) @method('POST') @endif
+        
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="setting-card">
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">Judul Berita</label>
+                                    <input type="text" class="form-control" id="title" name="title" 
+                                           value="{{ old('title', $news->title ?? '') }}" required>
                                 </div>
-                            </form>
+        
+                                <div class="mb-3">
+                                    <label for="excerpt" class="form-label">Ringkasan (Excerpt)</label>
+                                    <textarea class="form-control" id="excerpt" name="excerpt" 
+                                              rows="3">{{ old('excerpt', $news->excerpt ?? '') }}</textarea>
+                                    <div class="form-text">Ringkasan singkat berita (max 500 karakter)</div>
+                                </div>
+        
+                                <div class="mb-3">
+                                    <label for="content" class="form-label">Konten Berita</label>
+                                    <textarea class="form-control" id="content" name="content" 
+                                              rows="15">{{ old('content', $news->content ?? '') }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="col-md-4">
+                            <div class="setting-card">
+                                <div class="mb-3">
+                                    <label for="featured_image" class="form-label">Gambar Utama</label>
+                                    <input type="file" class="form-control" id="featured_image" name="featured_image" 
+                                           {{ !isset($news) ? 'required' : '' }} accept="image/*">
+                                    @if(isset($news) && $news->featured_image)
+                                    <div class="mt-2">
+                                        <img src="{{ asset('storage/' . $news->featured_image) }}" 
+                                             alt="Featured Image" class="img-thumbnail" style="max-height: 200px;">
+                                    </div>
+                                    @endif
+                                </div>
+        
+                                <div class="mb-3">
+                                    <label for="category_id" class="form-label">Kategori</label>
+                                    <select class="form-select" id="category_id" name="category_id" required>
+                                        <option value="">Pilih Kategori</option>
+                                        @foreach($categories as $category)
+                                        <option value="{{ $category->id }}" 
+                                            {{ old('category_id', $news->category_id ?? '') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+        
+                                <div class="mb-3">
+                                    <label for="published_at" class="form-label">Tanggal Publikasi</label>
+                                    <input type="datetime-local" class="form-control" id="published_at" name="published_at" 
+                                           value="{{ old('published_at', isset($news) && $news->published_at ? $news->published_at->format('Y-m-d\TH:i') : '') }}">
+                                </div>
+        
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="is_published" name="is_published" 
+                                           value="1" {{ old('is_published', $news->is_published ?? false) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="is_published">
+                                        Publikasikan Berita
+                                    </label>
+                                </div>
+        
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-save me-2"></i>
+                                        {{ isset($news) ? 'Update' : 'Simpan' }} Berita
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-        
-                <!-- Daftar Berita -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="setting-card">
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Gambar</th>
-                                            <th>Judul</th>
-                                            <th>Kategori</th>
-                                            <th>Penulis</th>
-                                            <th>Tanggal</th>
-                                            <th>Views</th>
-                                            <th>Status</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($news as $item)
-                                        <tr>
-                                            <td>
-                                                <img src="{{ asset('storage/' . $item->featured_image) }}" 
-                                                     alt="{{ $item->title }}" 
-                                                     style="width: 80px; height: 60px; object-fit: cover;" 
-                                                     class="rounded">
-                                            </td>
-                                            <td>
-                                                <strong>{{ $item->title }}</strong>
-                                                <br>
-                                                <small class="text-muted">{{ Str::limit($item->excerpt, 50) }}</small>
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-{{ $item->category->color }}">
-                                                    {{ $item->category->name }}
-                                                </span>
-                                            </td>
-                                            <td>{{ $item->user->name }}</td>
-                                            <td>
-                                                <small>{{ $item->created_at->format('d M Y') }}</small>
-                                                <br>
-                                                <small class="text-muted">{{ $item->created_at->format('H:i') }}</small>
-                                            </td>
-                                            <td>{{ $item->views }}</td>
-                                            <td>
-                                                <span class="badge bg-{{ $item->is_published ? 'success' : 'secondary' }}">
-                                                    {{ $item->is_published ? 'Published' : 'Draft' }}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <a href="{{ route('berita.show', $item->slug) }}" 
-                                                       class="btn btn-sm btn-info" target="_blank">
-                                                        <i class="fas fa-eye"></i>
-                                                    </a>
-                                                    <a href="{{ route('admin.berita.edit', $item) }}" 
-                                                       class="btn btn-sm btn-primary">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <form action="{{ route('admin.berita.hapus', $item) }}" 
-                                                          method="POST" class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger" 
-                                                                onclick="return confirm('Apakah Anda yakin ingin menghapus berita ini?')">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        @empty
-                                        <tr>
-                                            <td colspan="8" class="text-center py-4">
-                                                <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
-                                                <p>Belum ada berita. Tambahkan berita pertama Anda.</p>
-                                            </td>
-                                        </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
-        
-                            <!-- Pagination -->
-                            @if($news->hasPages())
-                            <div class="d-flex justify-content-center mt-4">
-                                {{ $news->links() }}
-                            </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
@@ -551,6 +482,9 @@
     <!-- jQuery (for sidebar toggle) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
+    <!-- Include CKEditor or other rich text editor -->
+    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+
     <!-- Custom Script -->
     <script>
         $(document).ready(function() {
@@ -599,6 +533,7 @@
                 }
             }).trigger('resize'); // jalankan sekali saat load
         });
+
     </script>
            
 </body>
