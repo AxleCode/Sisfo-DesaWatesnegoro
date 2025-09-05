@@ -409,18 +409,10 @@
                                 <i class="fas fa-users"></i>
                             </div>
                             <h4>158</h4>
-                            <p class="text-muted">Pengguna Terdaftar</p>
+                            <p class="text-muted">Pin Lokasi</p>
                         </div>
                     </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="dashboard-card">
-                            <div class="card-icon bg-warning text-white">
-                                <i class="fas fa-comments"></i>
-                            </div>
-                            <h4>42</h4>
-                            <p class="text-muted">Komentar Baru</p>
-                        </div>
-                    </div>
+                    
                 </div>
                 
                 <!-- Recent Activity and Quick Actions -->

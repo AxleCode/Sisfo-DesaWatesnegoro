@@ -35,6 +35,10 @@
         rel="stylesheet"
     />
 
+    <!-- Include Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <!-- Custom CSS -->
     <style>
         :root {
@@ -184,6 +188,15 @@
             transform: translateY(-2px);
         }
 
+        .map-section {
+            padding: 80px 0;
+        }
+
+        #homeMap {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 3px solid white;
+        }
+
 /* Untuk mobile responsiveness */
 @media (max-width: 768px) {
     .hero-slider .carousel-item {
@@ -231,6 +244,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#about">Tentang Desa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#map-section">Peta</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#news">Berita</a>
@@ -384,6 +400,27 @@
                 </div>
             </div>
             @endif
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section id="map-section" class="map-section bg-light">
+        <div class="container" style="margin-top: 10px">
+            <h2 class="section-title">Peta Desa Watesnegoro</h2>
+            <p class="text-center ">*Klik pin lokasi untuk mengetahui informasi tempat</p>
+            <p class="text-center mb-4" style="margin-top: -15px">Temukan lokasi penting dan fasilitas di Desa Watesnegoro</p>
+            
+            <div class="row">
+                <div class="col-12">
+                    <div id="homeMap" style="height: 600px; border-radius: 10px;"></div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="https://maps.app.goo.gl/dLHVGtu1ow9Gpqux6" target="blank_" class="btn btn-primary">
+                    <i class="fas fa-map-marked-alt me-2"></i>Buka Maps
+                </a>
+            </div>
         </div>
     </section>
 
@@ -574,6 +611,112 @@
                 toggleButton.innerHTML = '<i class="fas fa-chevron-down me-2"></i>Lihat File Lainnya';
             });
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize home map
+            const defaultLatitude = -7.564947;
+            const defaultLongitude = 112.652278;
+
+            const homeMap = L.map('homeMap').setView([defaultLatitude, defaultLongitude], 15);
+            
+            // Base layers (pilihan view medan)
+            const openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            });
+
+            const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+            });
+
+            const terrain = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+                attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a>'
+            });
+
+            const darkMap = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            });
+
+            // Add default layer
+            satellite.addTo(homeMap);
+
+            // Layer control
+            const baseMaps = {
+                "Peta Standar": openStreetMap,
+                "Satelit": satellite,
+                "Topografi": terrain,
+                "Mode Gelap": darkMap
+            };
+
+            L.control.layers(baseMaps).addTo(homeMap);
+
+            // Tambahkan kontrol skala
+            L.control.scale({metric: true, imperial: false}).addTo(homeMap);
+
+            // Load map data
+            fetch('{{ route("peta.data") }}')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const markers = L.layerGroup().addTo(homeMap);
+                        
+                        data.data.forEach(mapItem => {
+                            // Tentukan icon berdasarkan type
+                            let iconColor = mapItem.color || '#FF0000';
+                            if (mapItem.type === 'important') iconColor = '#FF9800';
+                            if (mapItem.type === 'facility') iconColor = '#2196F3';
+                            
+                            const customIcon = L.divIcon({
+                                className: 'custom-map-marker',
+                                html: `<div style="background-color: ${iconColor}; width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3);"></div>`,
+                                iconSize: [24, 24],
+                                iconAnchor: [12, 12]
+                            });
+
+                            const marker = L.marker([mapItem.latitude, mapItem.longitude], {icon: customIcon})
+                                .addTo(markers)
+                                .bindPopup(`
+                                    <div style="max-width: 350px;">
+                                        <h5 style="margin-bottom: 10px; color: #333;">${mapItem.title}</h5>
+                                        <p style="margin-bottom: 10px; color: #666;">${mapItem.description || ''}</p>
+                                        ${mapItem.photos.length > 0 ? 
+                                            `<img src="/storage/${mapItem.photos[0].photo_path}" 
+                                                style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 10px;">` : ''}
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span class="badge" style="background-color: ${iconColor}; color: white; padding: 4px 8px; border-radius: 12px;">
+                                                ${mapItem.type.toUpperCase()}
+                                            </span>
+                                            <a href="${mapItem.link_map}" target="_blank" 
+                                            style="font-size: 12px; color: #007bff; text-decoration: none;">
+                                                📍 Buka di Google Maps
+                                            </a>
+                                        </div>
+                                    </div>
+                                `);
+                        });
+
+                        // Tambahkan layer markers ke layer control
+                        const overlayMaps = {
+                            "Lokasi": markers
+                        };
+
+                        L.control.layers(baseMaps, overlayMaps).addTo(homeMap);
+                    }
+                });
+
+            // Tambahkan kontrol pencarian lokasi
+            const searchControl = new L.Control.Search({
+                position: 'topright',
+                layer: markers,
+                propertyName: 'title',
+                marker: false,
+                moveToLocation: function(latlng, title, map) {
+                    map.setView(latlng, 16); // Zoom to location
+                }
+            });
+            
+            homeMap.addControl(searchControl);
+        });
+
 </script>
 
 

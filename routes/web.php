@@ -8,6 +8,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\MapController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index']);
@@ -80,6 +81,16 @@ Route::middleware('auth')->group(function () {
         Route::post('/tambah', [CategoryController::class, 'store'])->name('admin.kategori.tambah');
         Route::post('/update/{category}', [CategoryController::class, 'update'])->name('admin.kategori.update');
         Route::delete('/hapus/{category}', [CategoryController::class, 'destroy'])->name('admin.kategori.hapus');
+    });
+
+    // Routes untuk peta
+    Route::prefix('peta')->group(function () {
+        Route::get('/', [MapController::class, 'index'])->name('admin.peta');
+        Route::post('/', [MapController::class, 'store'])->name('admin.peta.simpan');
+        Route::get('/{map}', [MapController::class, 'show'])->name('admin.peta.detail');
+        Route::put('/{map}', [MapController::class, 'update'])->name('admin.peta.update');
+        Route::delete('/{map}', [MapController::class, 'destroy'])->name('admin.peta.hapus');
+        Route::get('/data/map', [MapController::class, 'getMapData'])->name('peta.data');
     });
 
     // Route dashboard umum yang mengarahkan berdasarkan role

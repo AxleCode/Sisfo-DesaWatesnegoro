@@ -28,7 +28,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('admin.peta') }}" class="{{ Request::is('admin/peta') ? 'active' : '' }}">
                         <i class="fas fa-map-marked-alt"></i> Peta Desa
                     </a>
                 </li> 
