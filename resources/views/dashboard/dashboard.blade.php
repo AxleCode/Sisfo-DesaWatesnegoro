@@ -252,6 +252,40 @@
             display: block;
         }
 
+        .dashboard-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            margin-bottom: 20px;
+            height: 100%;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .list-group-item {
+            border-left: none;
+            border-right: none;
+            padding: 15px 0;
+        }
+
+        .list-group-item:first-child {
+            border-top: none;
+        }
+
+        .list-group-item:last-child {
+            border-bottom: none;
+        }
+
         /* sembunyikan tombol saat lebar layar >=768px */
         @media (min-width: 768px) {
             #sidebarCollapse {
@@ -378,117 +412,182 @@
                         <h2 class="mb-4">Dashboard Sistem</h2>
                         <div class="alert alert-primary d-flex align-items-center" role="alert">
                             <i class="fas fa-info-circle me-2"></i>
-                            <div>Selamat datang {{ Auth::user()->name }} di Sistem Administrasi Desa Watesnegoro. Anda login sebagai Administrator.</div>
+                            <div>Selamat datang {{ Auth::user()->name }} di Sistem Administrasi Desa Watesnegoro. Anda login sebagai {{ Auth::user()->role }}.</div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Stats Cards -->
                 <div class="row mb-4">
-                    <div class="col-md-3 col-sm-6">
+                    <div class="col-md-3 col-sm-6 mb-3">
                         <div class="dashboard-card">
                             <div class="card-icon bg-primary text-white">
                                 <i class="fas fa-newspaper"></i>
                             </div>
-                            <h4>25</h4>
+                            <h4>{{ $stats['total_news'] }}</h4>
                             <p class="text-muted">Total Berita</p>
+                            <small class="text-success">
+                                <i class="fas fa-check-circle me-1"></i>
+                                {{ $stats['published_news'] }} Published
+                            </small>
                         </div>
                     </div>
-                    <div class="col-md-3 col-sm-6">
+                    <div class="col-md-3 col-sm-6 mb-3">
                         <div class="dashboard-card">
                             <div class="card-icon bg-success text-white">
                                 <i class="fas fa-download"></i>
                             </div>
-                            <h4>12</h4>
+                            <h4>{{ $stats['total_files'] }}</h4>
                             <p class="text-muted">File Download</p>
+                            <small class="text-success">
+                                <i class="fas fa-check-circle me-1"></i>
+                                {{ $stats['active_files'] }} Active
+                            </small>
                         </div>
                     </div>
-                    <div class="col-md-3 col-sm-6">
+                    <div class="col-md-3 col-sm-6 mb-3">
                         <div class="dashboard-card">
                             <div class="card-icon bg-info text-white">
-                                <i class="fas fa-users"></i>
+                                <i class="fas fa-map-marker-alt"></i>
                             </div>
-                            <h4>158</h4>
+                            <h4>{{ $stats['total_maps'] }}</h4>
                             <p class="text-muted">Pin Lokasi</p>
+                            <small class="text-success">
+                                <i class="fas fa-check-circle me-1"></i>
+                                {{ $stats['active_maps'] }} Active
+                            </small>
                         </div>
                     </div>
                     
                 </div>
-                
-                <!-- Recent Activity and Quick Actions -->
+        
+                <!-- Charts and Recent Activity -->
                 <div class="row">
+                    <!-- Charts Section -->
                     <div class="col-lg-8">
-                        <div class="dashboard-card">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="dashboard-card">
+                                    <h4 class="mb-4">Berita per Bulan</h4>
+                                    <canvas id="newsChart" height="250"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="dashboard-card">
+                                    <h4 class="mb-4">Download File</h4>
+                                    <canvas id="downloadsChart" height="250"></canvas>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <!-- Recent Activity -->
+                        <div class="dashboard-card mb-4">
                             <h4 class="mb-4">Aktivitas Terbaru</h4>
                             <div class="list-group">
+                                @forelse($recentActivities as $activity)
                                 <div class="list-group-item d-flex align-items-center">
-                                    <div class="bg-primary rounded-circle p-2 me-3">
-                                        <i class="fas fa-plus text-white"></i>
+                                    <div class="bg-{{ $activity->getActivityColor() }} rounded-circle p-2 me-3">
+                                        <i class="fas fa-{{ $activity->getActivityIcon() }} text-white"></i>
                                     </div>
                                     <div class="flex-grow-1">
-                                        <div class="d-flex justify-content-between">
-                                            <h6 class="mb-1">Berita Baru Ditambahkan</h6>
-                                            <small class="text-muted">2 jam yang lalu</small>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h6 class="mb-1">{{ $activity->activity }}</h6>
+                                            <small class="text-muted">{{ $activity->created_at->diffForHumans() }}</small>
                                         </div>
-                                        <p class="mb-1">"Kerja Bakti Desa Watesnegoro" telah ditambahkan</p>
+                                        <p class="mb-1">
+                                            Oleh: <strong>{{ $activity->user->name }}</strong>
+                                            @if($activity->ip_address)
+                                            • IP: {{ $activity->ip_address }}
+                                            @endif
+                                        </p>
+                                       
                                     </div>
                                 </div>
-                                <div class="list-group-item d-flex align-items-center">
-                                    <div class="bg-success rounded-circle p-2 me-3">
-                                        <i class="fas fa-download text-white"></i>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <div class="d-flex justify-content-between">
-                                            <h6 class="mb-1">File Diunduh</h6>
-                                            <small class="text-muted">5 jam yang lalu</small>
-                                        </div>
-                                        <p class="mb-1">Formulir KTP diunduh 15 kali</p>
-                                    </div>
+                                @empty
+                                <div class="list-group-item text-center text-muted py-4">
+                                    <i class="fas fa-history fa-2x mb-3"></i>
+                                    <p>Belum ada aktivitas</p>
                                 </div>
-                                <div class="list-group-item d-flex align-items-center">
-                                    <div class="bg-info rounded-circle p-2 me-3">
-                                        <i class="fas fa-user text-white"></i>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <div class="d-flex justify-content-between">
-                                            <h6 class="mb-1">Pengguna Baru</h6>
-                                            <small class="text-muted">Kemarin</small>
-                                        </div>
-                                        <p class="mb-1">Budi Santoso mendaftar sebagai warga</p>
-                                    </div>
-                                </div>
-                                <div class="list-group-item d-flex align-items-center">
-                                    <div class="bg-warning rounded-circle p-2 me-3">
-                                        <i class="fas fa-comment text-white"></i>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <div class="d-flex justify-content-between">
-                                            <h6 class="mb-1">Komentar Baru</h6>
-                                            <small class="text-muted">2 hari yang lalu</small>
-                                        </div>
-                                        <p class="mb-1">Siti memberikan komentar pada berita "Pelatihan Kerajinan"</p>
-                                    </div>
-                                </div>
+                                @endforelse
                             </div>
+                            
                         </div>
                     </div>
-                    
+        
+                    <!-- Sidebar -->
                     <div class="col-lg-4">
-                        <div class="dashboard-card">
+                        <!-- Quick Actions -->
+                        <div class="dashboard-card mb-4">
                             <h4 class="mb-4">Aksi Cepat</h4>
                             <div class="d-grid gap-2">
-                                <button class="btn btn-primary mb-2">
+                                <a href="{{ route('admin.berita.tambah') }}" class="btn btn-primary mb-2">
                                     <i class="fas fa-plus me-2"></i>Tambah Berita
-                                </button>
-                                <button class="btn btn-success mb-2">
+                                </a>
+                                <a href="{{ route('admin.file') }}" class="btn btn-success mb-2">
                                     <i class="fas fa-upload me-2"></i>Unggah File
-                                </button>
-                                <button class="btn btn-warning mb-2">
+                                </a>
+                                <a href="{{ route('admin.peta') }}" class="btn btn-info mb-2">
+                                    <i class="fas fa-map-marker-alt me-2"></i>Tambah Pin Peta
+                                </a>
+                                <a href="{{ route('admin.setup') }}" class="btn btn-warning mb-2">
                                     <i class="fas fa-cog me-2"></i>Pengaturan Website
-                                </button>
+                                </a>
                             </div>
                         </div>
-                        
+        
+                        <!-- Most Downloaded Files -->
+                        <div class="dashboard-card mb-4">
+                            <h4 class="mb-4">File Terpopuler</h4>
+                            <div class="list-group list-group-flush">
+                                @forelse($mostDownloadedFiles as $file)
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ Str::limit($file->title, 25) }}</h6>
+                                        <small class="text-muted">{{ strtoupper($file->file_type) }} • {{ $file->download_count }}x download</small>
+                                    </div>
+                                    <span class="badge bg-{{ $file->is_active ? 'success' : 'secondary' }}">
+                                        {{ $file->is_active ? 'Aktif' : 'Nonaktif' }}
+                                    </span>
+                                </div>
+                                @empty
+                                <div class="list-group-item text-center text-muted py-3">
+                                    <i class="fas fa-file-download fa-2x mb-2"></i>
+                                    <p>Belum ada file</p>
+                                </div>
+                                @endforelse
+                            </div>
+                        </div>
+        
+                        <!-- Popular News -->
+                        <div class="dashboard-card">
+                            <h4 class="mb-4">Berita Terpopuler</h4>
+                            <div class="list-group list-group-flush">
+                                @forelse($popularNews as $news)
+                                <a href="{{ route('berita.show', $news->slug) }}" class="list-group-item list-group-item-action">
+                                    <div class="d-flex align-items-center">
+                                        <img src="{{ asset('storage/' . $news->featured_image) }}" 
+                                             alt="{{ $news->title }}"
+                                             class="rounded me-3"
+                                             style="width: 40px; height: 40px; object-fit: cover;">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">{{ Str::limit($news->title, 30) }}</h6>
+                                            <small class="text-muted">
+                                                <span class="badge bg-{{ $news->category->color }} me-1">
+                                                    {{ $news->category->name }}
+                                                </span>
+                                                • {{ $news->views }} views
+                                            </small>
+                                        </div>
+                                    </div>
+                                </a>
+                                @empty
+                                <div class="list-group-item text-center text-muted py-3">
+                                    <i class="fas fa-newspaper fa-2x mb-2"></i>
+                                    <p>Belum ada berita</p>
+                                </div>
+                                @endforelse
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -503,6 +602,76 @@
     
     <!-- Custom Script -->
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load chart data
+            fetch('{{ route("admin.dashboard.chart") }}')
+                .then(response => response.json())
+                .then(data => {
+                    // News Chart
+                    const newsCtx = document.getElementById('newsChart').getContext('2d');
+                    new Chart(newsCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                            datasets: [{
+                                label: 'Jumlah Berita',
+                                data: Object.values(data.news),
+                                backgroundColor: 'rgba(44, 110, 73, 0.8)',
+                                borderColor: 'rgba(44, 110, 73, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    // Downloads Chart
+                    const downloadsCtx = document.getElementById('downloadsChart').getContext('2d');
+                    new Chart(downloadsCtx, {
+                        type: 'line',
+                        data: {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                            datasets: [{
+                                label: 'Total Download',
+                                data: Object.values(data.downloads),
+                                backgroundColor: 'rgba(76, 149, 108, 0.2)',
+                                borderColor: 'rgba(76, 149, 108, 1)',
+                                borderWidth: 2,
+                                fill: true,
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                });
+        });
+
         $(document).ready(function() {
             // initial state:
             // pada desktop kita ingin sidebar terlihat; pada mobile default collapsed di CSS
