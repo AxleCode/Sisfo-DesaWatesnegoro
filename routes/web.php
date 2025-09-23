@@ -12,6 +12,23 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\DashboardController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/make-symlink', function () {
+    $target = '/home/oobmrxev/project/storage/app/public';
+    $link = '/home/oobmrxev/public_html/storage';
+    if (file_exists($link)) {
+        echo "Symlink sudah ada.";
+    } else {
+        symlink($target, $link);
+        echo "Symlink berhasil dibuat.";
+    }
+});
+
+Route::get('/clear-cache', function () {
+    \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+    return 'Cache cleared!';
+});
+
+
 Route::get('/home', [HomeController::class, 'index']);
 
 // Routes untuk berita di frontend (harus di luar middleware auth)
