@@ -23,6 +23,10 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Tambahkan sebelum group middleware auth agar pin di peta home tampil
+Route::get('/data/map', [MapController::class, 'getMapData'])->name('peta.data');
+
+
 // Route yang membutuhkan authentication
 Route::middleware('auth')->group(function () {
     
@@ -97,7 +101,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/{map}', [MapController::class, 'show'])->name('admin.peta.detail');
         Route::put('/{map}', [MapController::class, 'update'])->name('admin.peta.update');
         Route::delete('/{map}', [MapController::class, 'destroy'])->name('admin.peta.hapus');
-        Route::get('/data/map', [MapController::class, 'getMapData'])->name('peta.data');
     });
 
     // Route dashboard umum yang mengarahkan berdasarkan role
