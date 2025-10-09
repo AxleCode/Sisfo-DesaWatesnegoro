@@ -118,7 +118,14 @@ class FileController extends Controller
         // Increment download count
         $file->increment('download_count');
 
-        $filePath = storage_path('app/public/' . $file->file_path);
+        $filePath = storage_path('app/public/' . $file->file_path); //setting buat di website
+        
+        // Arahkan langsung ke lokasi file di public_html ini settingan buat web
+        // $filePath = base_path('../public_html/storage/' . $file->file_path);
+
+        // if (!file_exists($filePath)) {
+        //     abort(404, 'File not found: ' . $filePath);
+        // }
         
         return response()->download($filePath, $file->title . '.' . $file->file_type);
     }
