@@ -43,6 +43,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Tambahkan sebelum group middleware auth agar pin di peta home tampil
 Route::get('/data/map', [MapController::class, 'getMapData'])->name('peta.data');
 
+Route::get('/download/{id}', [FileController::class, 'download'])->name('file.download');
 
 // Route yang membutuhkan authentication
 Route::middleware('auth')->group(function () {
@@ -84,7 +85,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/tambah', [FileController::class, 'store'])->name('admin.file.tambah');
         Route::post('/update/{id}', [FileController::class, 'update'])->name('admin.file.update');
         Route::delete('/hapus/{id}', [FileController::class, 'destroy'])->name('admin.file.hapus');
-        Route::get('/download/{id}', [FileController::class, 'download'])->name('file.download');
     });
 
     // Route untuk setup website

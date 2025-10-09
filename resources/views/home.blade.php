@@ -393,7 +393,7 @@
                                         </span>
                                     </div>
                                     @if($dusun->description)
-                                    <p class="card-text mt-2 small">{{ Str::limit($dusun->description, 100) }}</p>
+                                    <p class="card-text mt-2 small">{{ Str::limit($dusun->description, 1000) }}</p>
                                     @endif
                                 </div>
                             </div>
