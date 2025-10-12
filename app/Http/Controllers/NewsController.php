@@ -78,6 +78,8 @@ class NewsController extends Controller
         $validated['user_id'] = auth()->id();
         $validated['slug'] = Str::slug($validated['title']);
 
+        $validated['is_published'] = $request->boolean('is_published', false);
+
         if ($validated['is_published'] && empty($validated['published_at'])) {
             $validated['published_at'] = now();
         }
@@ -160,6 +162,8 @@ class NewsController extends Controller
 
         $validated['slug'] = Str::slug($validated['title']);
 
+        $validated['is_published'] = $request->boolean('is_published', false);
+        
         if ($validated['is_published'] && empty($validated['published_at'])) {
             $validated['published_at'] = now();
         }

@@ -721,7 +721,7 @@
                                                     <div class="mb-3">
                                                         <label for="dusun_image{{ $dusun->id }}" class="form-label">Gambar</label>
                                                         <input type="file" class="form-control" id="dusun_image{{ $dusun->id }}" name="image" accept="image/*">
-                                                        <div class="form-text">Kosongkan jika tidak ingin mengubah gambar</div>
+                                                        <div class="form-text">Kosongkan jika tidak ingin mengubah gambar, Max ukuran gambar (2MB) format png,jpg,jpeg</div>
                                                     </div>
                                                     <div class="form-check mb-3">
                                                         <input class="form-check-input" type="checkbox" id="dusun_is_active{{ $dusun->id }}" name="is_active" value="1" {{ $dusun->is_active ? 'checked' : '' }}>
@@ -902,6 +902,8 @@
                         <div class="mb-3">
                             <label for="dusun_image" class="form-label">Gambar</label>
                             <input type="file" class="form-control" id="dusun_image" name="image" accept="image/*">
+                            <div class="form-text">Max ukuran gambar (2MB) format png,jpg,jpeg</div>
+
                         </div>
                         <div class="form-check mb-3">
                             <input class="form-check-input" type="checkbox" id="dusun_is_active" name="is_active" value="1" checked>

@@ -169,8 +169,12 @@ class PengaturanController extends Controller
             'population' => 'nullable|integer|min:0',
             'households' => 'nullable|integer|min:0',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:3048',
             'order' => 'nullable|integer'
+        ], [
+            'image.max' => 'Ukuran gambar tidak boleh lebih dari 2 MB.',
+            'image.image' => 'File yang diunggah harus berupa gambar.',
+            'image.mimes' => 'Format gambar harus jpeg, png, jpg, atau gif.',
         ]);
 
         if ($request->hasFile('image')) {
@@ -194,8 +198,12 @@ class PengaturanController extends Controller
             'population' => 'nullable|integer|min:0',
             'households' => 'nullable|integer|min:0',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:3048',
             'order' => 'nullable|integer'
+        ], [
+            'image.max' => 'Ukuran gambar tidak boleh lebih dari 2 MB.',
+            'image.image' => 'File yang diunggah harus berupa gambar.',
+            'image.mimes' => 'Format gambar harus jpeg, png, jpg, atau gif.',
         ]);
 
         if ($request->hasFile('image')) {
