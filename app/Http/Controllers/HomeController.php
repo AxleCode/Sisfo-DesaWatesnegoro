@@ -9,6 +9,7 @@ use App\Models\Dusun;
 use App\Models\File;
 use App\Models\Setting;
 use App\Models\News;
+use App\Models\InstagramReel;
 // use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
@@ -47,6 +48,12 @@ class HomeController extends Controller
                 ->take(3)
                 ->get();
 
+        // Ambil Instagram Reels yang aktif
+        $instagramReels = InstagramReel::where('is_active', true)
+                ->orderBy('order', 'asc')
+                ->pluck('url')
+                ->toArray();
+
         return view('home', compact(
             'sliders', 
             'aboutSliders', 
@@ -55,7 +62,8 @@ class HomeController extends Controller
             'totalKK',
             'jumlahDusun',
             'files',
-            'latestNews'
+            'latestNews',
+            'instagramReels'
         ));
     }
 }

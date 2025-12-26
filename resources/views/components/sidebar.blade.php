@@ -23,6 +23,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('admin.instagram') }}" class="{{ Request::is('admin/instagram*') ? 'active' : '' }}">
+                        <i class="fab fa-instagram"></i> Berita Instagram
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('admin.file') }}" class="{{ Request::is('admin/file') ? 'active' : '' }}">
                         <i class="fas fa-download"></i> File Download
                     </a>

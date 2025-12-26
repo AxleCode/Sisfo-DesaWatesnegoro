@@ -10,6 +10,7 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InstagramReelController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/make-symlink', function () {
@@ -101,6 +102,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit/{news}', [NewsController::class, 'edit'])->name('admin.berita.edit');
         Route::post('/update/{news}', [NewsController::class, 'update'])->name('admin.berita.update');
         Route::delete('/hapus/{news}', [NewsController::class, 'destroy'])->name('admin.berita.hapus');
+    });
+
+    // Routes untuk Instagram Reels di admin
+    Route::prefix('admin/instagram')->group(function () {
+        Route::get('/', [InstagramReelController::class, 'index'])->name('admin.instagram');
+        Route::get('/tambah', [InstagramReelController::class, 'create'])->name('admin.instagram.tambah');
+        Route::post('/tambah', [InstagramReelController::class, 'store'])->name('admin.instagram.simpan');
+        Route::get('/edit/{reel}', [InstagramReelController::class, 'edit'])->name('admin.instagram.edit');
+        Route::put('/update/{reel}', [InstagramReelController::class, 'update'])->name('admin.instagram.update');
+        Route::delete('/hapus/{reel}', [InstagramReelController::class, 'destroy'])->name('admin.instagram.hapus');
     });
 
     // Routes untuk kategori
