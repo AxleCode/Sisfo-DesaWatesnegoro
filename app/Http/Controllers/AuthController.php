@@ -58,8 +58,12 @@ class AuthController extends Controller
         if ($user->isAdmin() || $user->isStaff()) {
             return redirect()->route('admin.dashboard');
         }
+
+        if (method_exists($user, 'isBumdes') && $user->isBumdes()) {
+            return redirect()->route('bumdes.dashboard');
+        }
         
-        return redirect()->route('warga.dashboard');
+        return redirect()->route('home');
     }
 
     // Dashboard umum yang mengarahkan berdasarkan role

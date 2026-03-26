@@ -38,6 +38,15 @@
                     </a>
                 </li> 
                 <li>
+                    <a href="#subMenuBumdes" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fas fa-store"></i> BUMDES
+                    </a>
+                    <ul class="sub-menu collapse" id="subMenuBumdes">
+                        <li><a href="{{ route('admin.bumdes.foto') }}"><i class="fas fa-images"></i> Foto Slider</a></li>
+                        <li><a href="{{ route('admin.bumdes.link') }}"><i class="fas fa-link"></i> Link Spreadsheet</a></li>
+                    </ul>
+                </li>
+                <li>
                     <a href="#subMenu4" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                         <i class="fas fa-cog"></i> Pengaturan
                     </a>

@@ -261,9 +261,6 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto fs-5">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="#about">Tentang Desa</a>
                     </li>
                     <li class="nav-item">
@@ -276,7 +273,7 @@
                         <a class="nav-link" href="#download">Download</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#contact">Kontak</a>
+                        <a class="nav-link" href="{{ route('bumdes') }}">BUMDES</a>
                     </li>
                 </ul>
             </div>
@@ -556,11 +553,29 @@
     <section id="download" class="download-section">
         <div class="container" style="margin-top: 10px">
             <h2 class="section-title">Download File</h2>
-            <p class="text-center mb-5">Silakan unduh formulir dan dokumen penting yang disediakan oleh pemerintah desa</p>
+            <p class="text-center mb-4">Silakan unduh formulir dan dokumen penting yang disediakan oleh pemerintah desa</p>
+
+            @if($files->count() > 0)
+            <div class="row mb-4">
+                <div class="col-lg-8 mx-auto">
+                    <label for="downloadFilter" class="form-label small text-muted mb-1">Cari file</label>
+                    <div class="input-group shadow-sm rounded overflow-hidden">
+                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+                        <input type="search" id="downloadFilter" class="form-control border-start-0" placeholder="Ketik nama file atau deskripsi..." autocomplete="off" aria-label="Cari file unduhan">
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            <div id="downloadNoResults" class="alert alert-warning text-center d-none mb-0" role="status">
+                <i class="fas fa-search me-2"></i>Tidak ada file yang cocok dengan pencarian Anda.
+            </div>
             
-            <div class="row">
+            <div class="row" id="downloadFilesRowFirst">
                 @foreach($files->take(4) as $file)
-                <div class="col-md-6 mb-4">
+                <div class="col-md-6 mb-4 download-file-item"
+                     data-title="{{ e(Str::lower($file->title)) }}"
+                     data-description="{{ e(Str::lower($file->description ?? '')) }}">
                     <div class="download-item">
                         <h4><i class="{{ $file->getIconClass() }} me-2"></i> {{ $file->title }}</h4>
                         <p>{{ $file->description }}</p>
@@ -585,9 +600,11 @@
             <!-- Bagian collapse untuk file tambahan -->
             @if($files->count() > 4)
             <div id="more-downloads" class="collapse mt-4">
-                <div class="row">
+                <div class="row" id="downloadFilesRowMore">
                     @foreach($files->skip(4) as $file)
-                    <div class="col-md-6 mb-4">
+                    <div class="col-md-6 mb-4 download-file-item"
+                         data-title="{{ e(Str::lower($file->title)) }}"
+                         data-description="{{ e(Str::lower($file->description ?? '')) }}">
                         <div class="download-item">
                             <h4><i class="{{ $file->getIconClass() }} me-2"></i> {{ $file->title }}</h4>
                             <p>{{ $file->description }}</p>
@@ -602,7 +619,7 @@
             </div>
     
             <!-- Tombol toggle taruh di paling bawah -->
-            <div class="text-center mt-3">
+            <div class="text-center mt-3" id="downloadToggleWrap">
                 <a id="toggleButton" href="#more-downloads" class="btn btn-outline-primary" data-bs-toggle="collapse" aria-expanded="false">
                     <i class="fas fa-chevron-down me-2"></i>Lihat File Lainnya
                 </a>
@@ -689,14 +706,60 @@
         document.addEventListener("DOMContentLoaded", function() {
             const toggleButton = document.getElementById("toggleButton");
             const collapseElement = document.getElementById("more-downloads");
+            if (toggleButton && collapseElement) {
+                collapseElement.addEventListener("shown.bs.collapse", function () {
+                    toggleButton.innerHTML = '<i class="fas fa-chevron-up me-2"></i>Lebih Sedikit';
+                });
 
-            collapseElement.addEventListener("shown.bs.collapse", function () {
-                toggleButton.innerHTML = '<i class="fas fa-chevron-up me-2"></i>Lebih Sedikit';
-            });
+                collapseElement.addEventListener("hidden.bs.collapse", function () {
+                    toggleButton.innerHTML = '<i class="fas fa-chevron-down me-2"></i>Lihat File Lainnya';
+                });
+            }
+        });
 
-            collapseElement.addEventListener("hidden.bs.collapse", function () {
-                toggleButton.innerHTML = '<i class="fas fa-chevron-down me-2"></i>Lihat File Lainnya';
-            });
+        // Filter download: nama file (judul) + deskripsi
+        document.addEventListener('DOMContentLoaded', function () {
+            const section = document.getElementById('download');
+            const input = document.getElementById('downloadFilter');
+            if (!section || !input) return;
+
+            const noResults = document.getElementById('downloadNoResults');
+            const moreDownloads = document.getElementById('more-downloads');
+            const toggleWrap = document.getElementById('downloadToggleWrap');
+
+            function applyDownloadFilter() {
+                const q = input.value.trim().toLowerCase();
+                const items = section.querySelectorAll('.download-file-item');
+                let visibleCount = 0;
+
+                items.forEach(function (el) {
+                    const t = (el.getAttribute('data-title') || '').toLowerCase();
+                    const d = (el.getAttribute('data-description') || '').toLowerCase();
+                    const match = !q || t.indexOf(q) !== -1 || d.indexOf(q) !== -1;
+                    el.style.display = match ? '' : 'none';
+                    if (match) visibleCount++;
+                });
+
+                if (noResults) {
+                    noResults.classList.toggle('d-none', !(q && visibleCount === 0));
+                }
+
+                if (toggleWrap) {
+                    toggleWrap.classList.toggle('d-none', !!q);
+                }
+
+                if (moreDownloads && typeof bootstrap !== 'undefined') {
+                    const bsCollapse = bootstrap.Collapse.getOrCreateInstance(moreDownloads, { toggle: false });
+                    if (q) {
+                        bsCollapse.show();
+                    } else {
+                        bsCollapse.hide();
+                    }
+                }
+            }
+
+            input.addEventListener('input', applyDownloadFilter);
+            input.addEventListener('search', applyDownloadFilter);
         });
 
         document.addEventListener('DOMContentLoaded', function() {

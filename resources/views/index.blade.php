@@ -157,9 +157,6 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto fs-5">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="#about">Tentang Desa</a>
                     </li>
                     <li class="nav-item">
@@ -169,7 +166,7 @@
                         <a class="nav-link" href="#download">Download</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#contact">Kontak</a>
+                        <a class="nav-link" href="{{ route('bumdes') }}">BUMDES</a>
                     </li>
                 </ul>
             </div>

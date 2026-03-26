@@ -11,8 +11,14 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InstagramReelController;
+use App\Http\Controllers\BumdesPublicController;
+use App\Http\Controllers\BumdesDashboardController;
+use App\Http\Controllers\BumdesFotoController;
+use App\Http\Controllers\BumdesLinkController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+Route::get('/bumdes', [BumdesPublicController::class, 'index'])->name('bumdes');
 Route::get('/make-symlink', function () {
     $target = '/home/oobmrxev/project/storage/app/public';
     $link = '/home/oobmrxev/public_html/storage';
@@ -60,6 +66,29 @@ Route::middleware('auth')->group(function () {
     Route::prefix('admin')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
         Route::get('/dashboard/chart-data', [DashboardController::class, 'getChartData'])->name('admin.dashboard.chart');
+    });
+
+    // BUMDES (akses dari admin/staff)
+    Route::middleware('check.role:admin,staff')->prefix('admin/bumdes')->group(function () {
+        Route::get('/foto', [BumdesFotoController::class, 'index'])->name('admin.bumdes.foto');
+        Route::post('/foto', [BumdesFotoController::class, 'store'])->name('admin.bumdes.foto.tambah');
+        Route::post('/foto/update/{id}', [BumdesFotoController::class, 'update'])->name('admin.bumdes.foto.update');
+        Route::delete('/foto/hapus/{id}', [BumdesFotoController::class, 'destroy'])->name('admin.bumdes.foto.hapus');
+
+        Route::get('/link', [BumdesLinkController::class, 'index'])->name('admin.bumdes.link');
+        Route::post('/link', [BumdesLinkController::class, 'save'])->name('admin.bumdes.link.simpan');
+    });
+
+    // Dashboard BUMDES (role bumdes)
+    Route::middleware('check.role:bumdes')->prefix('bumdes/dashboard')->group(function () {
+        Route::get('/', [BumdesDashboardController::class, 'index'])->name('bumdes.dashboard');
+        Route::get('/foto', [BumdesFotoController::class, 'index'])->name('bumdes.foto');
+        Route::post('/foto', [BumdesFotoController::class, 'store'])->name('bumdes.foto.tambah');
+        Route::post('/foto/update/{id}', [BumdesFotoController::class, 'update'])->name('bumdes.foto.update');
+        Route::delete('/foto/hapus/{id}', [BumdesFotoController::class, 'destroy'])->name('bumdes.foto.hapus');
+
+        Route::get('/link', [BumdesLinkController::class, 'index'])->name('bumdes.link');
+        Route::post('/link', [BumdesLinkController::class, 'save'])->name('bumdes.link.simpan');
     });
 
     // Route untuk pengaturan

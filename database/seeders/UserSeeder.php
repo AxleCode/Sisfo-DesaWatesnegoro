@@ -49,6 +49,18 @@ class UserSeeder extends Seeder
                 'remember_token' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
+            ],
+            [
+                'name' => 'Bumdes Watesnegoro',
+                'username' => 'bumdes',
+                'email' => null,
+                'email_verified_at' => null,
+                'role' => 'bumdes',
+                'avatar' => null,
+                'password' => Hash::make('bumdes123'),
+                'remember_token' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]
         ]);
     }

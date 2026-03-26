@@ -76,6 +76,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Cek apakah user adalah bumdes
+     */
+    public function isBumdes()
+    {
+        return $this->role === 'bumdes';
+    }
+
+    /**
      * Cek apakah user adalah warga
      */
     public function isWarga()
